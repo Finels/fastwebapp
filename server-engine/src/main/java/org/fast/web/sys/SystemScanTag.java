@@ -1,4 +1,4 @@
-package org.fast.web.model;
+package org.fast.web.sys;
 
 /**
  * Description:  包扫描的空标记接口
@@ -7,7 +7,7 @@ package org.fast.web.model;
  *
  * @author 付尧
  * @version 1.0
- * @timestamp 2017/9/20
+ * @timestamp 2017/9/21
  */
-public interface SpringScanTag {
+public interface SystemScanTag {
 }
