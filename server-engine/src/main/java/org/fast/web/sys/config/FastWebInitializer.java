@@ -3,7 +3,7 @@ package org.fast.web.sys.config;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 /**
- * Description:  BillcardinoutManager
+ * Description:  WebInitializer
  * Copyright: © 2017 CSNT. All rights reserved.
  * Company: CSNT
  *
@@ -11,15 +11,15 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
  * @version 1.0
  * @timestamp 2017/9/30
  */
-public class MVCdispatcher extends AbstractAnnotationConfigDispatcherServletInitializer {
+public class FastWebInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        return new Class<?>[0];
+        return new Class<?>[]{ApplicationContextConfig.class};
     }
 
     @Override
     protected Class<?>[] getServletConfigClasses() {
-        return new Class<?>[0];
+        return new Class<?>[]{WebConfig.class};
     }
 
     @Override

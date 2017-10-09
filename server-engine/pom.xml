@@ -16,10 +16,15 @@
         <resources>
             <resource>
                 <directory>src/main/java</directory>
-                <!--<includes>-->
-                <!--<include>**/*.xml</include>-->
-                <!--<include>**/*.proper</include>-->
-                <!--</includes>-->
+                <includes>
+                    <include>**/*.xml</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.properties</include>
+                </includes>
             </resource>
         </resources>
         <plugins>
@@ -159,6 +164,11 @@
             <version>${hibernate.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>4.3.6.Final</version>
+        </dependency>
+        <dependency>
             <groupId>org.codehaus.btm</groupId>
             <artifactId>btm</artifactId>
             <version>${btm.version}</version>
@@ -168,6 +178,29 @@
             <artifactId>ehcache</artifactId>
             <version>2.10.4</version>
         </dependency>
+        <!--javax-->
+        <!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.1.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-nop -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-nop</artifactId>
+            <version>1.6.4</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-nop</artifactId>
+            <version>1.6.4</version>
+        </dependency>
+
+
     </dependencies>
 
 </project>
