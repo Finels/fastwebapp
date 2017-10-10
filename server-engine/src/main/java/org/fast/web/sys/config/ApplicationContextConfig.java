@@ -70,7 +70,12 @@ public class ApplicationContextConfig {
         dataSource.setAllowLocalTransactions(true);
         dataSource.setApplyTransactionTimeout(true);
         dataSource.setShareTransactionConnections(true);
-        dataSource.setDriverProperties(sysConfig);
+        Properties database = new Properties();
+        database.put("driverClassName", sysConfig.getProperty("driverClassName"));
+        database.put("url", sysConfig.getProperty("url"));
+        database.put("user", sysConfig.getProperty("user"));
+        database.put("password", sysConfig.getProperty("password"));
+        dataSource.setDriverProperties(database);
         return dataSource;
     }
 

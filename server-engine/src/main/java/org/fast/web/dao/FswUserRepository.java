@@ -32,13 +32,13 @@ public interface FswUserRepository extends JpaRepository<FswUser, String> {
 
     List<FswUser> findByNicknameLike(String nickname);//传入的nickname需要加上%才能做like比较
 
-    List<FswUser> findByNickNameOrUsername(String nickname, String username);
+    List<FswUser> findByNicknameOrUsername(String nickname, String username);
 
-    List<FswUser> findByNickNameOrUsernameIgnoresCase(String nickname, String username);//只忽略了username的大小写
+//    List<FswUser> findByNicknameOrUsernameIgnoresCase(String nickname, String username);//只忽略了username的大小写
 
-    List<FswUser> findByNickNameOrUsernameAllIgnoresCaseOrderBySeqDesc(String nickname, String username);
+//    List<FswUser> findByNicknameOrUsernameAllIgnoresCaseOrderBySeqDesc(String nickname, String username);
 
-    @Query("select * from fsw_user")
+    @Query(value = "select * from fsw_user",nativeQuery = true)
     List <FswUser>findFswUserByNativeSql();
 
 }
