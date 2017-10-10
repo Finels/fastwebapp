@@ -130,6 +130,13 @@
             <artifactId>spring-data-jpa</artifactId>
             <version>${spring-data.version}</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.springframework.data/spring-data-mongodb -->
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-mongodb</artifactId>
+            <version>1.10.5.RELEASE</version>
+        </dependency>
+
 
         <!--Apache commons-->
         <dependency>
