@@ -11,9 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.config.PropertiesFactoryBean;
+import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
@@ -40,27 +44,34 @@ import java.util.*;
  */
 @Configuration
 @ComponentScan(basePackageClasses = {ModelScanTag.class, SystemScanTag.class})
+@PropertySource({"WEB-INF/classes/database.properties", "WEB-INF/classes/mongo.properties"})
 public class ApplicationContextConfig {
 
     /**
      * 配置properties
      */
-    @Bean(name = "sysConfig")
-    public Properties setProperties(SpringContextUtil contextUtil) throws IOException {
-        Properties properties = new Properties();
+    @Bean
+    public PropertySourcesPlaceholderConfigurer setProperties(SpringContextUtil contextUtil) throws IOException {
+        PropertySourcesPlaceholderConfigurer placeholderConfigurer = new PropertySourcesPlaceholderConfigurer();
         Resource r = contextUtil.getApplicationContext().getResource("WEB-INF/classes/database.properties");
-        FileReader reader = new FileReader(r.getFile());
-        properties.load(reader);
-        return properties;
+        Resource mongoConfig = contextUtil.getApplicationContext().getResource("WEB-INF/classes/mongo.properties");
+        placeholderConfigurer.setLocations(new Resource[]{r, mongoConfig});
+        return placeholderConfigurer;
     }
 
+    /**
+     * mysql主数据源
+     *
+     * @param env
+     * @return
+     */
     @Bean
-    public DataSource setDataSource(@Qualifier("sysConfig") Properties sysConfig) {
+    public DataSource setDataSource(Environment env) {
         PoolingDataSource dataSource = new PoolingDataSource();
         dataSource.setClassName("bitronix.tm.resource.jdbc.lrc.LrcXADataSource");
         dataSource.setUniqueName("dataSourceProd");
-        dataSource.setMinPoolSize(Integer.parseInt(sysConfig.getProperty("minPoolSize")));
-        dataSource.setMaxPoolSize(Integer.parseInt(sysConfig.getProperty("maxPoolSize")));
+        dataSource.setMinPoolSize(Integer.parseInt(env.getProperty("minPoolSize")));
+        dataSource.setMaxPoolSize(Integer.parseInt(env.getProperty("maxPoolSize")));
         dataSource.setIsolationLevel("READ_COMMITTED");
         dataSource.setMaxIdleTime(300);
         dataSource.setAcquireIncrement(2);
@@ -71,10 +82,10 @@ public class ApplicationContextConfig {
         dataSource.setApplyTransactionTimeout(true);
         dataSource.setShareTransactionConnections(true);
         Properties database = new Properties();
-        database.put("driverClassName", sysConfig.getProperty("driverClassName"));
-        database.put("url", sysConfig.getProperty("url"));
-        database.put("user", sysConfig.getProperty("user"));
-        database.put("password", sysConfig.getProperty("password"));
+        database.put("driverClassName", env.getProperty("driverClassName"));
+        database.put("url", env.getProperty("url"));
+        database.put("user", env.getProperty("user"));
+        database.put("password", env.getProperty("password"));
         dataSource.setDriverProperties(database);
         return dataSource;
     }
