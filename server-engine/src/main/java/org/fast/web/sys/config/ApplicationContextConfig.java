@@ -1,5 +1,7 @@
 package org.fast.web.sys.config;
 
+import bitronix.tm.BitronixTransactionManager;
+import bitronix.tm.TransactionManagerServices;
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 import org.fast.web.model.ModelScanTag;
 import org.fast.web.sys.SystemScanTag;
@@ -26,6 +28,7 @@ import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.transaction.jta.JtaTransactionManager;
 
 import javax.sql.DataSource;
 import java.io.FileReader;
@@ -133,5 +136,26 @@ public class ApplicationContextConfig {
         return new PersistenceExceptionTranslationPostProcessor();
     }
 
+    /**
+     * 配置事务管理，
+     * 当前使用的是jta事务管理器，支持多数据源即分布式事务管理
+     *
+     * @return
+     */
+    @Bean(name = "transactionManager")
+    public JtaTransactionManager setTransactionManager(BitronixTransactionManager btm) {
+        JtaTransactionManager transactionManager = new JtaTransactionManager();
+        transactionManager.setTransactionManager(btm);
+        transactionManager.setUserTransaction(btm);
+        return transactionManager;
+    }
+
+    /**
+     * 配置关系型数据源的事务管理器，采用bitronix
+     */
+    @Bean(destroyMethod = "shutdown")
+    public BitronixTransactionManager setBitronixTransactionManager() {
+        return TransactionManagerServices.getTransactionManager();
+    }
 
 }
