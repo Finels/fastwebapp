@@ -24,6 +24,7 @@ public class FastWebInitializer extends AbstractAnnotationConfigDispatcherServle
 
     @Override
     protected String[] getServletMappings() {
-        return new String[]{"/"};
+        return new String[]{"*.action"};
     }
+
 }
