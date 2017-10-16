@@ -4,6 +4,8 @@ import com.mongodb.util.JSONSerializers;
 import org.apache.struts2.json.JSONException;
 import org.apache.struts2.json.JSONUtil;
 import org.fast.web.domain.ActionBody;
+import org.fast.web.model.fswuser.service.intf.UserServiceIntf;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.test.util.JsonExpectationsHelper;
@@ -31,6 +33,8 @@ import java.util.Map;
 @Controller
 public class HomeController {
 
+    @Autowired
+    private UserServiceIntf userServiceIntf;
 //    @RequestMapping("/")
 //    public String home(HttpServletRequest request, HttpServletResponse response) {
 //        return "index";
