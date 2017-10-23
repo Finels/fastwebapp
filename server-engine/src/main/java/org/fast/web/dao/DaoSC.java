@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 /**
  * Description:  BillcardinoutManager
@@ -15,7 +16,8 @@ import javax.persistence.EntityManager;
  * @timestamp 2017/10/16
  */
 public class DaoSC {
-    @Autowired
+
+    @PersistenceContext
     private EntityManager entityManager;
 
     public void doSave() {

@@ -20,9 +20,11 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
+import org.springframework.expression.ConstructorResolver;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor;
 import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -46,7 +48,7 @@ import java.util.*;
 @SuppressWarnings("Duplicates")
 @Configuration
 @EnableTransactionManagement //启用事务注解扫描器
-@ComponentScan(basePackageClasses = {ModelScanTag.class, SystemScanTag.class})
+@ComponentScan(basePackages = "org.fast.web")
 @PropertySource({"WEB-INF/classes/database.properties", "WEB-INF/classes/mongo.properties"})
 public class ApplicationContextConfig {
 
@@ -63,48 +65,16 @@ public class ApplicationContextConfig {
     }
 
     /**
-     * mysql主数据源
-     *
-     * @param env
-     * @return
-     */
-    @Bean(name = "scgs_datasource")
-    public DataSource setDataSource1(Environment env) {
-        PoolingDataSource dataSource = new PoolingDataSource();
-        dataSource.setClassName("bitronix.tm.resource.jdbc.lrc.LrcXADataSource");
-        dataSource.setUniqueName("dataSourceSC");
-        dataSource.setMinPoolSize(Integer.parseInt(env.getProperty("sc.minPoolSize")));
-        dataSource.setMaxPoolSize(Integer.parseInt(env.getProperty("sc.maxPoolSize")));
-        dataSource.setIsolationLevel("READ_COMMITTED");
-        dataSource.setMaxIdleTime(300);
-        dataSource.setAcquireIncrement(2);
-        dataSource.setAcquisitionInterval(1);
-        dataSource.setAcquisitionTimeout(2);
-        dataSource.setDeferConnectionRelease(true);
-        dataSource.setAllowLocalTransactions(true);
-        dataSource.setApplyTransactionTimeout(true);
-        dataSource.setShareTransactionConnections(true);
-        Properties database = new Properties();
-        database.put("driverClassName", env.getProperty("sc.driverClassName"));
-        database.put("url", env.getProperty("sc.url"));
-        database.put("user", env.getProperty("sc.user"));
-        database.put("password", env.getProperty("sc.password"));
-        dataSource.setDriverProperties(database);
-        return dataSource;
-    }
-
-    /**
      * mysql次数据源
      *
      * @param env
      * @return
      */
-    @Bean(name = "ali_datasource")
-    @Primary
-    public DataSource setDataSource2(Environment env) {
+    @Bean
+    public DataSource setDataSource(Environment env) {
         PoolingDataSource dataSource = new PoolingDataSource();
         dataSource.setClassName("bitronix.tm.resource.jdbc.lrc.LrcXADataSource");
-        dataSource.setUniqueName("dataSourceALI");
+        dataSource.setUniqueName("datasource#2");
         dataSource.setMinPoolSize(Integer.parseInt(env.getProperty("ali.minPoolSize")));
         dataSource.setMaxPoolSize(Integer.parseInt(env.getProperty("ali.maxPoolSize")));
         dataSource.setIsolationLevel("READ_COMMITTED");
@@ -149,37 +119,24 @@ public class ApplicationContextConfig {
 
     /**
      * spring-data-jpa相关配置实现类
-     *
-     * @param dataSource
-     * @param jpaVendorAdapter
-     * @return
      */
-    @Bean(name = "EntityManagerSC",autowire = Autowire.BY_NAME)
-    public LocalContainerEntityManagerFactoryBean entityManagerFactorySC(@Qualifier("scgs_datasource") DataSource dataSource, JpaVendorAdapter jpaVendorAdapter) {
-        LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
-        emf.setPackagesToScan("org.fast.web.domain");
-        emf.setBeanName("EntityManagerSC");
-        emf.setDataSource(dataSource);
-        emf.setJpaVendorAdapter(jpaVendorAdapter);
-        emf.setPersistenceUnitName("EntityManagerSC");
-        return emf;
-    }
-
-    @Bean(name = "EntityManagerALI", autowire = Autowire.BY_NAME)
-    @Primary
-    public LocalContainerEntityManagerFactoryBean entityManagerFactoryALI(@Qualifier("ali_datasource") DataSource dataSource, JpaVendorAdapter jpaVendorAdapter) {
-        LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
-        emf.setBeanName("EntityManagerALI");
-        emf.setPackagesToScan("org.fast.web.domain");
-        emf.setDataSource(dataSource);
-        emf.setJpaVendorAdapter(jpaVendorAdapter);
-        emf.setPersistenceUnitName("EntityManagerALI");
-        return emf;
+    @Bean
+    public LocalContainerEntityManagerFactoryBean entityManagerFactoryALI(DataSource datasource, JpaVendorAdapter jpaVendorAdapter) {
+        LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
+        entityManagerFactoryBean.setPackagesToScan(new String[]{"org.fast.web.domain", "org.fast.web.dao"});
+        entityManagerFactoryBean.setDataSource(datasource);
+        entityManagerFactoryBean.setJpaVendorAdapter(jpaVendorAdapter);
+        return entityManagerFactoryBean;
     }
 
     @Bean
     public BeanPostProcessor persistenceTranslation() {
         return new PersistenceExceptionTranslationPostProcessor();
+    }
+
+    @Bean
+    public PersistenceAnnotationBeanPostProcessor postProcessor() {
+        return new PersistenceAnnotationBeanPostProcessor();
     }
 
     /**
