@@ -33,6 +33,7 @@ BR.doAjax = function (url, param, success, complete, error) {
         data: params,
         //返回数据的格式
         dataType: "json",//"xml", "html", "script", "json", "jsonp", "text".
+        contentType: "application/json",
         async: true,//true,false
         //在请求之前调用的函数
         beforeSend: function () {
@@ -40,7 +41,7 @@ BR.doAjax = function (url, param, success, complete, error) {
         //成功返回之后调用的函数
         success: success,//ret
         //调用执行后调用的函数
-        complete: success,//XMLHttpRequest, textStatus
+        complete: null,//XMLHttpRequest, textStatus
         //调用出错执行的函数
         error: error
     });

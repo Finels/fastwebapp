@@ -1,7 +1,7 @@
 package org.fast.web.util;
 
 /**
- * Description:  BillcardinoutManager
+ * Description:  StringUtil
  * Copyright: © 2017 CSNT. All rights reserved.
  * Company: CSNT
  *

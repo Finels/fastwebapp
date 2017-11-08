@@ -1,6 +1,6 @@
 package org.fast.web.dao;
 
-import org.fast.web.domain.FswUser;
+import org.fast.web.domain.FastUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -23,22 +23,24 @@ import java.util.List;
  * 主题词一般会被忽略，仅作为一个标识，除非主题词为Distinct
  * 断言的命名则非常灵活，可以包含查询条件以及排序字段和分组字段，但是方法参数的顺序一定要与断言关键词的位置一致
  */
-public interface FswUserRepository extends JpaRepository<FswUser, String> {
-    FswUser findByUsername(String username);
+public interface FastUserRepository extends JpaRepository<FastUser, String> {
+    FastUser findByUsername(String username);
 
-    List<FswUser> findByNickname(String nickname);
+    FastUser findByPhone(String Phone);
 
-    List<FswUser> findByNicknameNotNull();
+    List<FastUser> findByNickname(String nickname);
 
-    List<FswUser> findByNicknameLike(String nickname);//传入的nickname需要加上%才能做like比较
+    List<FastUser> findByNicknameNotNull();
 
-    List<FswUser> findByNicknameOrUsername(String nickname, String username);
+    List<FastUser> findByNicknameLike(String nickname);//传入的nickname需要加上%才能做like比较
+
+    List<FastUser> findByNicknameOrUsername(String nickname, String username);
 
 //    List<FswUser> findByNicknameOrUsernameIgnoresCase(String nickname, String username);//只忽略了username的大小写
 
 //    List<FswUser> findByNicknameOrUsernameAllIgnoresCaseOrderBySeqDesc(String nickname, String username);
 
-    @Query(value = "select * from fsw_user",nativeQuery = true)
-    List <FswUser>findFswUserByNativeSql();
+    @Query(value = "select * from fast_user", nativeQuery = true)
+    List<FastUser> findFswUserByNativeSql();
 
 }

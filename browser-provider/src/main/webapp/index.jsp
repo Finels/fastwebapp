@@ -24,15 +24,15 @@
         <div class="col-md-12">
             <form style="text-align: center" class="bs-example bs-example-form">
                 <div class="input-group" style="margin: 20px">
-                    <span class="input-group-addon" id="fastlogin_username" fastId="username">用户名</span>
-                    <input type="text" class="form-control" placeholder="输入用户名" aria-describedby="fastlogin_username"
+                    <span class="input-group-addon">用户名</span>
+                    <input type="text" class="form-control" placeholder="输入用户名" id="fastlogin_username"
+                           fastId="username"
                            AUTOCOMPLETE="off">
                 </div>
                 <div class="input-group">
-                    <span class="input-group-addon" id="fastlogin_password"
-                          fastId="password">密&nbsp;&nbsp;&nbsp;码</span>
+                    <span class="input-group-addon">密&nbsp;&nbsp;&nbsp;码</span>
                     <input type="password" class="form-control" placeholder="输入密码"
-                           aria-describedby="fastlogin_password"
+                           id="fastlogin_password" fastId="password"
                            AUTOCOMPLETE="off">
                 </div>
                 <a href="javascript:void(0)" id="index_login" class="btn btn-primary" role="button"

@@ -1,6 +1,11 @@
-package org.fast.web.sys.config;
+package org.fast.web.sys.initializer;
 
+import org.fast.web.sys.config.ApplicationContextConfig;
+import org.fast.web.sys.config.WebConfig;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 
 /**
  * Description:  WebInitializer
@@ -27,4 +32,9 @@ public class FastWebInitializer extends AbstractAnnotationConfigDispatcherServle
         return new String[]{"*.action"};
     }
 
+    @Override
+    public void onStartup(ServletContext servletContext) throws ServletException {
+        super.onStartup(servletContext);
+        servletContext.setInitParameter("spring.profiles.active", "jpa");
+    }
 }

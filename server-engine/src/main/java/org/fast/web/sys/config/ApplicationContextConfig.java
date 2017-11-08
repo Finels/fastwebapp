@@ -52,6 +52,7 @@ import java.util.*;
 @PropertySource({"WEB-INF/classes/database.properties", "WEB-INF/classes/mongo.properties"})
 public class ApplicationContextConfig {
 
+
     /**
      * 配置properties
      */
@@ -64,46 +65,9 @@ public class ApplicationContextConfig {
         return placeholderConfigurer;
     }
 
-    /**
-     * mysql次数据源
-     *
-     * @param env
-     * @return
-     */
-    @Bean
-    public DataSource setDataSource(Environment env) {
-        PoolingDataSource dataSource = new PoolingDataSource();
-        dataSource.setClassName("bitronix.tm.resource.jdbc.lrc.LrcXADataSource");
-        dataSource.setUniqueName("datasource#2");
-        dataSource.setMinPoolSize(Integer.parseInt(env.getProperty("ali.minPoolSize")));
-        dataSource.setMaxPoolSize(Integer.parseInt(env.getProperty("ali.maxPoolSize")));
-        dataSource.setIsolationLevel("READ_COMMITTED");
-        dataSource.setMaxIdleTime(300);
-        dataSource.setAcquireIncrement(2);
-        dataSource.setAcquisitionInterval(1);
-        dataSource.setAcquisitionTimeout(2);
-        dataSource.setDeferConnectionRelease(true);
-        dataSource.setAllowLocalTransactions(true);
-        dataSource.setApplyTransactionTimeout(true);
-        dataSource.setShareTransactionConnections(true);
-        Properties database = new Properties();
-        database.put("driverClassName", env.getProperty("ali.driverClassName"));
-        database.put("url", env.getProperty("ali.url"));
-        database.put("user", env.getProperty("ali.user"));
-        database.put("password", env.getProperty("ali.password"));
-        dataSource.setDriverProperties(database);
-        return dataSource;
-    }
 
-    @Bean
-    public JpaVendorAdapter jpaVendorAdapter() {
-        HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
-        adapter.setDatabase(Database.MYSQL);
-        adapter.setShowSql(true);
-        adapter.setGenerateDdl(false);
-        adapter.setDatabasePlatform("org.hibernate.dialect.MySQLDialect");
-        return adapter;
-    }
+
+
 
 //    @Bean
 //    public LocalSessionFactoryBean sessionFactory(DataSource dataSource) {
@@ -117,17 +81,7 @@ public class ApplicationContextConfig {
 //    }
 
 
-    /**
-     * spring-data-jpa相关配置实现类
-     */
-    @Bean
-    public LocalContainerEntityManagerFactoryBean entityManagerFactoryALI(DataSource datasource, JpaVendorAdapter jpaVendorAdapter) {
-        LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
-        entityManagerFactoryBean.setPackagesToScan(new String[]{"org.fast.web.domain", "org.fast.web.dao"});
-        entityManagerFactoryBean.setDataSource(datasource);
-        entityManagerFactoryBean.setJpaVendorAdapter(jpaVendorAdapter);
-        return entityManagerFactoryBean;
-    }
+
 
     @Bean
     public BeanPostProcessor persistenceTranslation() {

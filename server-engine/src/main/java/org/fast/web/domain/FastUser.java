@@ -14,13 +14,14 @@ import javax.persistence.*;
  * @timestamp 2017/9/22
  */
 @Entity
-@Table(name = "FSW_USER")
-public class FswUser {
+@Table(name = "FAST_USER")
+public class FastUser {
     private String uuid;
     private String username;
     private String password;
     private String nickname;
     private Integer seq;
+    private String phone;
 
     @Column(name = "UUID", nullable = false, insertable = true, updatable = true, length = 32, precision = 0)
     @Id
@@ -68,5 +69,14 @@ public class FswUser {
 
     public void setSeq(Integer seq) {
         this.seq = seq;
+    }
+
+    @Column(name = "PHONE", nullable = true, insertable = true, updatable = true, length = 255, precision = 0)
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }
