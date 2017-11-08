@@ -23,6 +23,9 @@ public class FastUser {
     private Integer seq;
     private String phone;
 
+    public FastUser() {
+    }
+
     @Column(name = "UUID", nullable = false, insertable = true, updatable = true, length = 32, precision = 0)
     @Id
     @GeneratedValue(generator = "idGenerator")

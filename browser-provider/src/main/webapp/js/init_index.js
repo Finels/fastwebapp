@@ -10,7 +10,13 @@ $(document).ready(function () {
         var replaceHost = $(this).context.baseURI;
         //Json.parse(String);
         //Json.stringify(Object);
-        BR.doAjax(loginUrl, {username: username, password: password}, function (ret) {
+        var user = {};
+        user.username = username;
+        user.password = password;
+        user.nickname = null;
+        // user.seq = null;
+        // user.phone = null;
+        BR.doAjax(loginUrl, user, function (ret) {
             window.location.replace(replaceHost + "views/maint.jsp");
         }, null, function () {
         });
