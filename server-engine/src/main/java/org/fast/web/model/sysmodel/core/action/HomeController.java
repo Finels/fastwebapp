@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -48,6 +50,7 @@ public class HomeController {
 
     @RequestMapping(value = "/home/login.action")
     public ResponseEntity<ResultBody> login(@RequestBody FastUser loginUser, HttpServletRequest request, HttpServletResponse response) {
+        MultipartFile file = ((MultipartHttpServletRequest) request).getFile("file");
         SqlSession session = sessionFactory.openSession();
         FastUser currentUser = repository.findByUsername(loginUser.getUsername());
         FastUserDao sessionDao = session.getMapper(FastUserDao.class);
