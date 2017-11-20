@@ -1,6 +1,7 @@
 package org.fast.web.sys.config;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -23,7 +24,6 @@ import java.util.Properties;
  * @timestamp 2017/11/3
  */
 @Configuration
-@Profile("jpa")
 public class OrmJpaConfig {
 
     /**
@@ -33,10 +33,10 @@ public class OrmJpaConfig {
      * @return
      */
     @Bean
-    public DataSource setDataSource(Environment env) {
+    public DataSource dataSourceJpa(Environment env) {
         PoolingDataSource dataSource = new PoolingDataSource();
         dataSource.setClassName("bitronix.tm.resource.jdbc.lrc.LrcXADataSource");
-        dataSource.setUniqueName("datasource#2");
+        dataSource.setUniqueName("datasource#1");
         dataSource.setMinPoolSize(Integer.parseInt(env.getProperty("ali.minPoolSize")));
         dataSource.setMaxPoolSize(Integer.parseInt(env.getProperty("ali.maxPoolSize")));
         dataSource.setIsolationLevel("READ_COMMITTED");
@@ -73,7 +73,7 @@ public class OrmJpaConfig {
      * 如果声明bean时不指定name，那么方法名会默认映射为bean-name，而EntityManagerFactory类默认的bean-name刚好为entityManagerFactory
      */
     @Bean(name = "entityManagerFactory")
-    public LocalContainerEntityManagerFactoryBean setEntityManagerFactory(DataSource datasource, JpaVendorAdapter jpaVendorAdapter) {
+    public LocalContainerEntityManagerFactoryBean setEntityManagerFactory(@Qualifier("dataSourceJpa") DataSource datasource, JpaVendorAdapter jpaVendorAdapter) {
         LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
         entityManagerFactoryBean.setPackagesToScan(new String[]{"org.fast.web.domain", "org.fast.web.dao"});
         entityManagerFactoryBean.setDataSource(datasource);

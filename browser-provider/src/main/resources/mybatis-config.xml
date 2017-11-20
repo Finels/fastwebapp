@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <!--
+    environments:开发模式
+    work:工作模式
+    default="development"，id="development"，两个的属性值必须一致
+     -->
+    <!-- 在配置文件中 关联包下的 接口类-->
+    <mappers>
+        <mapper class="org.fast.web.dao.FastUserDao"/>
+    </mappers>
+</configuration>

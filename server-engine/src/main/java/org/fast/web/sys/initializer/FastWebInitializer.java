@@ -19,7 +19,8 @@ import javax.servlet.ServletException;
 public class FastWebInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        return new Class<?>[]{ApplicationContextConfig.class};
+        return new Class<?>[]{ApplicationContextConfig.class
+        };
     }
 
     @Override
@@ -35,6 +36,6 @@ public class FastWebInitializer extends AbstractAnnotationConfigDispatcherServle
     @Override
     public void onStartup(ServletContext servletContext) throws ServletException {
         super.onStartup(servletContext);
-        servletContext.setInitParameter("spring.profiles.active", "jpa");
+        servletContext.setInitParameter("spring.profiles.active", "mybatis");
     }
 }

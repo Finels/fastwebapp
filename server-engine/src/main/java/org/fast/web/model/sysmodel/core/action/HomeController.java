@@ -1,5 +1,8 @@
 package org.fast.web.model.sysmodel.core.action;
 
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.fast.web.dao.FastUserDao;
 import org.fast.web.dao.FastUserRepository;
 import org.fast.web.domain.FastUser;
 import org.fast.web.domain.ResultBody;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,10 +33,14 @@ import java.util.Map;
  * @timestamp 2017/10/3
  */
 @RestController
+@Transactional
 public class HomeController {
 
     @Autowired
     private FastUserRepository repository;
+
+    @Autowired
+    private SqlSessionFactory sessionFactory;
 //    @RequestMapping("/")
 //    public String home(HttpServletRequest request, HttpServletResponse response) {
 //        return "index";
@@ -40,7 +48,11 @@ public class HomeController {
 
     @RequestMapping(value = "/home/login.action")
     public ResponseEntity<ResultBody> login(@RequestBody FastUser loginUser, HttpServletRequest request, HttpServletResponse response) {
+        SqlSession session = sessionFactory.openSession();
         FastUser currentUser = repository.findByUsername(loginUser.getUsername());
+        FastUserDao sessionDao = session.getMapper(FastUserDao.class);
+        FastUser currentUser1 = sessionDao.getUser(loginUser.getUsername());
+
         if (currentUser == null) {
             currentUser = repository.findByPhone(loginUser.getUsername());
             if (currentUser == null) throw new Bizexception("warning", "用户名不存在，请重试");

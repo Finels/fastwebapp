@@ -66,9 +66,6 @@ public class ApplicationContextConfig {
     }
 
 
-
-
-
 //    @Bean
 //    public LocalSessionFactoryBean sessionFactory(DataSource dataSource) {
 //        LocalSessionFactoryBean sfb = new LocalSessionFactoryBean();
@@ -79,8 +76,6 @@ public class ApplicationContextConfig {
 //        sfb.setHibernateProperties(properties);
 //        return sfb;
 //    }
-
-
 
 
     @Bean
@@ -112,7 +107,8 @@ public class ApplicationContextConfig {
      */
     @Bean(destroyMethod = "shutdown")
     public BitronixTransactionManager setBitronixTransactionManager() {
-        return TransactionManagerServices.getTransactionManager();
+        BitronixTransactionManager btm = TransactionManagerServices.getTransactionManager();
+        return btm;
     }
 
 

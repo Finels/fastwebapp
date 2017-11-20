@@ -20,17 +20,17 @@ Namespace.register("BR.DateUtils");
 
 BR.doAjax = function (url, param, success, complete, error) {
     //param = JSON.stringify(param);
-    // var params = {
-    //     actionUrl: url,
-    //     postData: JSON.stringify(param)
-    // };
+    //var params = {
+    //    actionUrl: url,
+    //    postData:
+    //};
     $.ajax({
         //提交数据的类型 POST GET
         type: "POST",
         //提交的网址
         url: url,
         //提交的数据
-        data: JSON.stringify(param),//非常重要，必须转换为json字符串再传递
+        data: JSON.stringify(param),
         //返回数据的格式
         dataType: "json",//"xml", "html", "script", "json", "jsonp", "text".
         contentType: "application/json",

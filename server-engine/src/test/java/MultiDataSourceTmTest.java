@@ -1,4 +1,3 @@
-import org.fast.web.model.fswuser.service.intf.UserServiceIntf;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -22,9 +21,6 @@ public class MultiDataSourceTmTest {
 
     @PersistenceContext(unitName = "EntityManagerALI")
     private EntityManager em2;
-
-    @Autowired
-    private UserServiceIntf userService;
 
 
     @Test

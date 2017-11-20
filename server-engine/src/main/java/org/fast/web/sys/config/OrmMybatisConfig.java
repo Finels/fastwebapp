@@ -1,7 +1,9 @@
 package org.fast.web.sys.config;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
+import org.apache.struts2.views.util.ContextUtil;
 import org.mybatis.spring.SqlSessionFactoryBean;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -25,7 +27,7 @@ import java.util.Properties;
 public class OrmMybatisConfig {
 
     @Bean
-    public DataSource dataSource(Environment env) {
+    public DataSource dataSourceMybatis(Environment env) {
         PoolingDataSource dataSource = new PoolingDataSource();
         dataSource.setClassName("bitronix.tm.resource.jdbc.lrc.LrcXADataSource");
         dataSource.setUniqueName("datasource#2");
@@ -50,9 +52,10 @@ public class OrmMybatisConfig {
     }
 
     @Bean
-    public SqlSessionFactoryBean sqlSessionFactory(DataSource dataSource) {
+    public SqlSessionFactoryBean sqlSessionFactory(@Qualifier("dataSourceMybatis") DataSource dataSource, SpringContextUtil contextUtil) {
         SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
         factoryBean.setDataSource(dataSource);
+        factoryBean.setConfigLocation(contextUtil.getApplicationContext().getResource("WEB-INF/classes/mybatis-config.xml"));
         return factoryBean;
     }
 }

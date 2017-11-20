@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="1 seconds" debug="false">
+    <property name="LOG_HOME_DIR" value="../../logs/scdp_log"/>
+    <property name="APP_NAME" value="scdp"/>
+    <property name="MAX_LOG_HIS" value="30"/>
+    <property name="MAX_LOG_SIZE" value="1000MB"/>
+
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder charset="UTF-8">
+            <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] [%logger{50}] %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="fileout" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--如果是 true，日志被追加到文件结尾，如果是 false，清空现存文件，默认是true。-->
+        <append>true</append>
+        <!--如果是 true，日志会被安全的写入文件，即使其他的FileAppender也在向此文件做写入操作，效率低，默认是 false-->
+        <prudent>false</prudent>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME_DIR}/${APP_NAME}_%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+            <maxHistory>${MAX_LOG_HIS}</maxHistory>
+        </rollingPolicy>
+        <!--日志文件最大的大小-->
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <MaxFileSize>${MAX_LOG_SIZE}</MaxFileSize>
+        </triggeringPolicy>
+        <encoder charset="UTF-8">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] [%logger{50}] %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!--<appender name="specialout" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
+    <!--<append>true</append>-->
+    <!--<prudent>false</prudent>-->
+    <!--&lt;!&ndash;根据用户ID过滤&ndash;&gt;-->
+    <!--<filter class="ch.qos.logback.core.filter.EvaluatorFilter">-->
+    <!--<evaluator>-->
+    <!--<expression>return message.contains("[userid=null]");</expression>-->
+    <!--</evaluator>-->
+    <!--<OnMatch>ACCEPT</OnMatch>-->
+    <!--<OnMismatch>DENY</OnMismatch>-->
+    <!--</filter>-->
+    <!--<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
+    <!--<fileNamePattern>${LOG_HOME_DIR}/${APP_NAME}_%d{yyyy-MM-dd}.special.log.gz</fileNamePattern>-->
+    <!--<maxHistory>${MAX_LOG_HIS}</maxHistory>-->
+    <!--</rollingPolicy>-->
+    <!--<encoder charset="UTF-8">-->
+    <!--<pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level [%logger{50}] %msg%n</pattern>-->
+    <!--</encoder>-->
+    <!--</appender>-->
+
+
+    <logger name="org.hibernate" level="ERROR"/>
+    <logger name="org.mybatis" level="ERROR"/>
+    <logger name="org.springframework" level="ERROR"/>
+    <logger name="com.opensymphony" level="WARN"/>
+    <logger name="org.apache" level="WARN"/>
+    <logger name="o.s" level="WARN"/>
+    <logger name="c.c" level="WARN"/>
+    <logger name="o.a.struts2.config.AbstractBeanSelectionProvider" level="WARN"/>
+    <logger name="com.atomikos" level="ERROR"/>
+    <logger name="org.quartz" level="INFO"/>
+    <logger name="com.csnt" level="INFO"/>
+    <logger name="org.apache.cxf.services" level="INFO"/>
+
+    <!-- show parameters for hibernate sql 专为 Hibernate 定制 -->
+    <!--<logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE"/>-->
+    <!--<logger name="org.hibernate.type.descriptor.sql.BasicExtractor" level="DEBUG"/>-->
+    <!--<logger name="org.hibernate.SQL" level="DEBUG"/>-->
+    <!--<logger name="org.hibernate.engine.QueryParameters" level="DEBUG"/>-->
+    <!--<logger name="org.hibernate.engine.query.HQLQueryPlan" level="DEBUG"/>-->
+
+
+    <!--<logger name="com.mw.scdp" level="INFO" additivity="false">-->
+    <!--<appender-ref ref="specialout"/>-->
+    <!--</logger>-->
+
+    <root level="INFO">
+        <appender-ref ref="stdout"/>
+        <!--<appender-ref ref="fileout"/>-->
+    </root>
+</configuration>
