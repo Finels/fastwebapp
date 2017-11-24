@@ -8,7 +8,10 @@ import org.fast.web.domain.FastUser;
 import org.fast.web.domain.ResultBody;
 import org.fast.web.sys.exception.Bizexception;
 import org.fast.web.sys.exception.Error;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -41,6 +44,8 @@ public class HomeController {
     @Autowired
     private FastUserRepository repository;
 
+    private Logger logeger = LoggerFactory.getLogger(this.getClass());
+
     @Autowired
     private SqlSessionFactory sessionFactory;
 //    @RequestMapping("/")
@@ -50,7 +55,6 @@ public class HomeController {
 
     @RequestMapping(value = "/home/login.action")
     public ResponseEntity<ResultBody> login(@RequestBody FastUser loginUser, HttpServletRequest request, HttpServletResponse response) {
-        MultipartFile file = ((MultipartHttpServletRequest) request).getFile("file");
         SqlSession session = sessionFactory.openSession();
         FastUser currentUser = repository.findByUsername(loginUser.getUsername());
         FastUserDao sessionDao = session.getMapper(FastUserDao.class);

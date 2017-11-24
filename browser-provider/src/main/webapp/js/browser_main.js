@@ -33,6 +33,8 @@ BR.doAjax = function (url, param, success, complete, error) {
         data: JSON.stringify(param),
         //返回数据的格式
         dataType: "json",//"xml", "html", "script", "json", "jsonp", "text".
+        //jsonp:"callback",
+        //jsonpCallback:"",
         contentType: "application/json",
         async: true,//true,false
         //在请求之前调用的函数

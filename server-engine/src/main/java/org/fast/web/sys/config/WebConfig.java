@@ -40,15 +40,15 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         return resolver;
     }
 
-    @Override
-    public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
-        configurer.enable();
-    }
-
-    @Override
-    public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
-        configurer.defaultContentType(MediaType.APPLICATION_JSON);
-    }
+//    @Override
+//    public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
+//        configurer.enable();
+//    }
+//
+//    @Override
+//    public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
+//        configurer.defaultContentType(MediaType.APPLICATION_JSON);
+//    }
 
     /**
      * 映射路径中，*表示改目录下的任意字符，**表示改目录下任意多个目录的任意字符，/表示网站根路径
@@ -72,14 +72,14 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         registry.addResourceHandler("/img/**").addResourceLocations("/img/").setCachePeriod(31556926);
     }
 
-    @Bean
-    public RequestMappingHandlerAdapter requestMappingHandlerAdapter() {
-        RequestMappingHandlerAdapter adapter = new RequestMappingHandlerAdapter();
-        List converters = new ArrayList<>();
-        converters.add(new MappingJackson2HttpMessageConverter());
-        converters.add(new StringHttpMessageConverter());
-        converters.add(new FormHttpMessageConverter());
-        adapter.setMessageConverters(converters);
-        return adapter;
-    }
+//    @Bean
+//    public RequestMappingHandlerAdapter requestMappingHandlerAdapter() {
+//        RequestMappingHandlerAdapter adapter = new RequestMappingHandlerAdapter();
+//        List converters = new ArrayList<>();
+//        converters.add(new MappingJackson2HttpMessageConverter());
+//        converters.add(new StringHttpMessageConverter());
+//        converters.add(new FormHttpMessageConverter());
+//        adapter.setMessageConverters(converters);
+//        return adapter;
+//    }
 }

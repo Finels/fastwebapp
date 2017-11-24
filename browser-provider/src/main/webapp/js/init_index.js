@@ -18,7 +18,8 @@ $(document).ready(function () {
         // user.phone = null;
         BR.doAjax(loginUrl, user, function (ret) {
             window.location.replace(replaceHost + "views/maint.jsp");
-        }, null, function () {
+        }, null, function (ret) {
+            alert(ret.responseText.errorDescription);
         });
     });
 
