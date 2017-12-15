@@ -1,6 +1,7 @@
 package org.fast.web.domain;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 
@@ -22,6 +23,8 @@ public class FastUser {
     private String nickname;
     private Integer seq;
     private String phone;
+    private transient MultipartFile file;
+
 
     public FastUser() {
     }
@@ -81,5 +84,14 @@ public class FastUser {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    @Transient
+    public MultipartFile getFile() {
+        return file;
+    }
+
+    public void setFile(MultipartFile file) {
+        this.file = file;
     }
 }

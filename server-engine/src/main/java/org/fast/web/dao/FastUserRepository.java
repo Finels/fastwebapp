@@ -1,6 +1,7 @@
 package org.fast.web.dao;
 
 import org.fast.web.domain.FastUser;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -25,7 +26,9 @@ import java.util.List;
  * 断言的命名则非常灵活，可以包含查询条件以及排序字段和分组字段，但是方法参数的顺序一定要与断言关键词的位置一致
  */
 public interface FastUserRepository extends JpaRepository<FastUser, String> {
-    FastUser findByUsername(String username);
+
+
+    public FastUser findByUsername(String username);
 
     FastUser findByPhone(String Phone);
 

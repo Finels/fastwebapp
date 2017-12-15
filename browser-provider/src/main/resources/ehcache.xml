@@ -46,21 +46,6 @@
                 properties="bootstrapAsynchronously=false"/>
     </cache>
 
-    <cache name="CACHE_ORG"
-           maxEntriesLocalHeap="1"
-           maxElementsInMemory="1"
-           memoryStoreEvictionPolicy="LFU"
-           eternal="false">
-        <cacheEventListenerFactory
-                class="com.csnt.scdp.sysmodules.cache.eventlistener.ScdpCacheEventListenerFactory"
-                properties="type=ORG"/>
-        <cacheEventListenerFactory
-                class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"
-                properties="replicateUpdatesViaCopy=false"/>
-        <bootstrapCacheLoaderFactory
-                class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory"
-                properties="bootstrapAsynchronously=false"/>
-    </cache>
 
 
 </ehcache>

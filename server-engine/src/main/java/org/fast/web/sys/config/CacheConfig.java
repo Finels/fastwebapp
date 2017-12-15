@@ -1,15 +1,20 @@
 package org.fast.web.sys.config;
 
+import org.fast.web.model.sysmodel.core.service.impl.UserServiceImpl;
+import org.fast.web.model.sysmodel.core.service.intf.UserServiceIntf;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
 import org.springframework.cache.support.CompositeCacheManager;
+import org.springframework.context.annotation.AdviceMode;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
@@ -28,47 +33,54 @@ import java.util.List;
  * @version 1.0
  * @timestamp 2017/9/25
  */
+
 @Configuration
 @EnableCaching
-@Profile("ehcache")
 public class CacheConfig {
 
     /**
      * 配置缓存管理器集合协调器，协调器可以集成多种缓存管理器，但是spring ioc容器中只能有一个cacheManager的实现bean
      * 协调器查找或存取缓存的顺序是根据集合内的先后顺序决定的
-     *
-     * @param cm
-     * @param redisTemplate
-     * @return
      */
-    @Bean
-    public CacheManager cacheManager(net.sf.ehcache.CacheManager cm, RedisTemplate redisTemplate) {
-        CompositeCacheManager cacheManager = new CompositeCacheManager();
-
-        List caches = new ArrayList<Object>() {
-            {
-                add(new EhCacheCacheManager(cm));
-                add(new RedisCacheManager(redisTemplate));
-            }
-        };
-        cacheManager.setCacheManagers(caches);
-        return cacheManager;
-    }
-
+//    @Bean
+//    public CacheManager cacheManager(net.sf.ehcache.CacheManager cm, RedisTemplate redisTemplate) {
+//        CompositeCacheManager cacheManager = new CompositeCacheManager();
+//        List caches = new ArrayList<Object>() {
+//            {
+//                add(new EhCacheCacheManager(cm));
+//                add(new RedisCacheManager(redisTemplate));
+//            }
+//        };
+//        cacheManager.setCacheManagers(caches);
+//        return cacheManager;
+//    }
 
 
-
-    @Bean
-    public EhCacheManagerFactoryBean ehcache() {
-        EhCacheManagerFactoryBean ehCacheManagerFactoryBean = new EhCacheManagerFactoryBean();
-        ehCacheManagerFactoryBean.setConfigLocation(new ClassPathResource("org/fast/web/sys/cache/ehcache.xml"));
-        return ehCacheManagerFactoryBean;
-    }
+//    @Bean
+//    public EhCacheManagerFactoryBean ehcache(SpringContextUtil contextUtil) {
+//        EhCacheManagerFactoryBean ehCacheManagerFactoryBean = new EhCacheManagerFactoryBean();
+//        Resource r = contextUtil.getApplicationContext().getResource("WEB-INF/classes/ehcache.xml");
+//        ehCacheManagerFactoryBean.setConfigLocation(r);
+//        return ehCacheManagerFactoryBean;
+//    }
 
 //    @Bean
 //    public EhCacheCacheManager ehcacheManager(CacheManager cm) {
 //        return new EhCacheCacheManager(cm);
 //    }
+    @Bean
+    public UserServiceIntf userServiceIntf() {
+        return new UserServiceImpl();
+    }
+
+    @Bean
+    public CacheManager cacheManager(RedisTemplate redisTemplate) {
+        return new RedisCacheManager(redisTemplate, new ArrayList<String>() {
+            {
+                add("redisCache");
+            }
+        });
+    }
 
     @Bean
     public JedisPoolConfig config() {
@@ -80,8 +92,11 @@ public class CacheConfig {
     }
 
     @Bean
-    public JedisConnectionFactory redisConnectionFactory(JedisPoolConfig config) {
+    public JedisConnectionFactory redisConnectionFactory(JedisPoolConfig config, Environment properties) {
         JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory();
+        jedisConnectionFactory.setHostName(properties.getProperty("redis.url"));
+        jedisConnectionFactory.setPort(Integer.parseInt(properties.getProperty("redis.port")));
+        jedisConnectionFactory.setPassword(properties.getProperty("redis.password"));
         jedisConnectionFactory.setPoolConfig(config);
         jedisConnectionFactory.afterPropertiesSet();
         return jedisConnectionFactory;

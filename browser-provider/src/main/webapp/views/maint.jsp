@@ -22,12 +22,25 @@
                 </p>
 
                 <div class="bs-callout bs-callout-danger">
-                    <h4>uuid</h4>
+                    <h4>username</h4>
+
                     <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Username" aria-describedby="basic-addon1">
+                        <input type="text" id="username" class="form-control" placeholder="Username"
+                               aria-describedby="basic-addon1">
                     </div>
                     <p>多个uuid，请使用;号分隔</p>
                 </div>
+
+                <div class="bs-callout bs-callout-danger">
+                    <h4>password</h4>
+
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Username" aria-describedby="basic-addon1"
+                               id="password">
+                    </div>
+                    <p>多个uuid，请使用;号分隔</p>
+                </div>
+                <button id="do_save">提交</button>
 
             </div>
         </div>
@@ -40,7 +53,7 @@
 <script src="/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
 <script src="/js/browser_main.js"></script>
 
-<script src="/js/init_index.js"></script>
+<script src="/js/maint.js"></script>
 
 </body>
 </html>

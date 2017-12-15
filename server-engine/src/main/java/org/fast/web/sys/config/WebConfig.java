@@ -9,13 +9,17 @@ import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.converter.xml.XmlAwareFormHttpMessageConverter;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import com.fasterxml.jackson.core.util.*;
 
 /**
@@ -82,4 +86,14 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 //        adapter.setMessageConverters(converters);
 //        return adapter;
 //    }
+
+    @Bean
+    public MultipartResolver multipartResolver() {
+        CommonsMultipartResolver viewResolver = new CommonsMultipartResolver();
+        viewResolver.setDefaultEncoding("UTF-8");
+        viewResolver.setMaxUploadSize(1024000000);
+        viewResolver.setResolveLazily(true);
+        viewResolver.setMaxInMemorySize(4096);
+        return viewResolver;
+    }
 }
