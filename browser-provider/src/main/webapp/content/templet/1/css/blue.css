@@ -1,0 +1,84 @@
+@charset "utf-8";
+/*code by zhangeryi*/
+/*css重置*/
+body { background: url(../images/blue/webbg.jpg) center top no-repeat #fff; }
+
+/*全局公用*/
+a:link { color: #333333; text-decoration: none }
+a:visited { color: #333333; text-decoration: none }
+a:hover { color: #095ba6; text-decoration: none }
+a:active { color: #28a7e1; text-decoration: none}
+a.xiangxi,a.xiangxi:link,a.xiangxi:visited{ font-size:12px; font-weight:normal; float:right; color:#ff6506;}
+a.xiangxi:hover,a.xiangxi:active{ text-decoration:none;color:#ff1d06;}
+/*首页*/
+.main { background: #fff;}
+.iconbg{background-image:url(../images/blue/icon_bg.png);}
+/*导航start*/
+.nav{ background:#037adb;}
+.nav li{background:url(../images/blue/icon_bg.png)  right -19px;}
+.nav li a,.nav li a:link,.nav li a:visited{ color:#fff;}
+.nav li a:hover,.nav li a:active{  text-decoration:underline}
+.nav .sub{  background:#037adb; }
+.nav .sub a:hover,.nav .sub a:active{ background:#ff8003; color:#fff;}
+/*导航end*/
+#banner-bg div{background:url(../images/blue/huiyibanner.jpg) center top #fafafa no-repeat; height:150px; overflow:visible;}
+.box .t{ /* background:url(../images/blue/icon_bg.png) -258px -51px #fafafa no-repeat; */}
+.panel .t{ /* background:url(../images/blue/newline.jpg) left center no-repeat; */}
+.box .t:before,.panel .t:before{background: #037adb;}
+.deadtime {border: 1px solid #037adb; }
+.time .c{ }
+.time .c .tit{ background:url(../images/blue/icon_bg.png) -266px -87px no-repeat;}
+.deadtime{}
+.daojishi-p{background:url(../images/blue/icon_bg.png) -1px -189px no-repeat;}
+
+
+.zhucet{background: url('../images/blue/lookResumebg.jpg') no-repeat 0px 0;color: #315AAA;}
+.zhuce table{ background:#dbe2e8}
+.zhuce table td.table_t{ background:#f4f9fe;}
+
+.buzhou li{background:url(../images/blue/icon_bg.png) 161px -478px no-repeat #e6ebef;color:#333;}
+.buzhou li.got{background:url(../images/blue/icon_bg.png) 161px -441px no-repeat #e6ebef; color:#333;}
+.buzhou li.now{background:url(../images/blue/icon_bg.png) 161px -478px no-repeat #4184d2; color:#fff;}
+.buzhou li.end{background:#e6ebef; color:#333;}
+.buzhou li.success{background:#4184d2; color:#fff;}
+/*分页*/
+.yPager .disabled { background: #e8ecef; color: #8a949c;}
+.yPager a:hover, .yPager .current { background: #037adb; color: #fff; }
+.yPager a { background: #e8ecf0; color: #a1acb4; }
+.yPager a:visited { color: #a1acb4; }
+
+/*按钮*/
+a.but,a.but:link,a.but:visited,.but{color:#fff; background:#ff8003; border:1px solid #ff6506; }
+a.but:hover,a.but:active,.but:hover{ background:#ff6506}
+a.btnBlue, .btnBlue { background: #037adb; border-radius: 3px; color: #fff; margin: 0px; border: 1px solid #084278; line-height: 16px; padding: 6px 10px; margin: 0px; font-family: "Microsoft Yahei", "微软雅黑", "Arial Narrow", "宋体";}
+a.btnBlue:hover, .btnBlue:hover { background: #064e90; }
+a.btnCheng, .btnCheng { background: #ff6506; border-radius: 3px; color: #fff; margin: 0px; border: 1px solid #ff1d06; line-height: 16px; padding: 6px 10px; margin: 0px; font-family: "Microsoft Yahei", "微软雅黑", "Arial Narrow", "宋体"; }
+a.btnCheng:hover, .btnCheng:hover { background: #ff4c06; }
+a.btnWhite, .btnWhite { background: #f5f5f5; border-radius: 3px; color: #333; margin: 0px; border: 1px solid #ccc; line-height: 16px; padding: 6px 10px; margin: 0px; }
+a.btnWhite:hover, .btnWhite:hover { background: #ebebeb; }
+a.btnLage, .btnLage { font-size: 14px; display: inline-block; padding: 10px 20px;cursor:pointer; }
+a.btnSmall, .btnSmall { font-size: 14px; display: inline-block; padding: 10px 20px; cursor:pointer;}
+/*会议列表*/
+.subMeetingListItem .itemDate{background:url(../images/blue/icon_bg.png) -27px -441px no-repeat;}
+a.ckwz,a.ckwz:link,a.ckwz:visited{ color:#fff;background:url(../images/blue/icon_bg.png) -140px -64px no-repeat;}
+a.ckwz:hover,a.ckwz:active{background:url(../images/blue/icon_bg.png) -140px -91px no-repeat; text-decoration:none;}
+/*会议详细*/
+.thrMeettingItem {border: 1px solid #b5e2fb;background: #edf8ff; }
+
+
+
+/*顶部*/
+.topBar {background: #f0f0f0; color: #666;border:1px solid #ccc;}
+.topBar a, .topBar a:link, .topBar a:visited { color: #333;}
+.topBar a:hover, .topBar a:active { color:#fc814b; }
+.topBar .user { color: #fc814b; }
+
+/*图标*/
+.icons { background: url(../images/blue/icon_bg.png) no-repeat; }
+.tel { background-position: -264px -128px; padding-left: 20px; }
+.guanzhu { padding-left: 20px; }
+a.guanzhu, a.guanzhu:link, a.guanzhu:visited { background-position: -253px -177px; display: block; width: 19px; height: 19px; margin-top: 5px; padding-left: 10px; padding-right: 0px; }
+a.guanzhu:hover, a.guanzhu:active { background-position: -253px -160px; }
+a.weixin, a.weixin:link, a.weixin:visited { background-position: -260px -217px; position: relative;z-index:99}
+a.weixin:hover, a.weixin:active { background-position: -260px -198px; }
+a.weixin img{ z-index:9999999; zoom:1}
