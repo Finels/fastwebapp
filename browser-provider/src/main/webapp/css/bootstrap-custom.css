@@ -1,0 +1,382 @@
+﻿/*bootstrap resets for SharePoint*/
+*, *:before, *:after {
+	-moz-box-sizing: content-box; /*border-box causes many issues with SP*/
+}
+* [class^="span"], * [class^="span"]:before, , * [class^="span"]:after {
+	-moz-box-sizing: border-box;
+}
+img {
+	max-width: none;
+	width: auto;
+}
+* [class^="span"] img {
+	max-width: 100%; /*for images inside span grid*/
+}
+#scriptWPQ2 img, img.ms-webpart-menuArrowImg, #applist img {
+	width: auto; /*within a span may still need to have width of image not 100% for SP2013 OOTB features/imges*/
+	max-width: none;
+}
+select, input[type="file"] {
+    height: auto;
+    line-height: 20px;
+}
+label {
+    display: inline-block;
+    margin-bottom: 0px;
+}
+.ms-siteactions-imgspan {
+	float: none;
+	margin: 0px;
+}
+.navbar-inner {
+	padding: 0px;
+}
+/*end bootstrap resets*/
+
+/*template styles*/
+/* ribbon*/ 
+#s4-ribbonrow [class*="span"] {
+    float: none;
+    margin-left: 0px;
+}
+#pageStatusBar[class], .ms-status-msg {
+	margin-bottom: 0px;
+}
+#suiteBarLeft {
+    background-color: #0088CC;
+}
+.ms-cui-dd-text, input.ms-cui-cb-input, input[type="text"].ms-cui-cb-input {
+    border-color: #D3D6D9;
+    border-image: none;
+    border-style: solid;
+    border-width: 1px 0 1px 1px;
+    cursor: default;
+    display: block;
+    height: 14px;
+    padding: 3px 7px 2px;
+    white-space: nowrap;
+    font-size: inherit;
+}
+/*header*/
+.header {
+	margin-top: 10px;
+}
+.headtitle {
+	margin-left: 10px;
+}
+#pageTitle {
+	margin: 0px 0px 5px;
+	font-size: 2em;
+}
+/* breadcrumb*/
+ul.s4-breadcrumb {
+	margin-bottom: 5px;
+}
+ul.s4-breadcrumb, ul.s4-breadcrumb ul {
+	margin: 0px 0px 2px;
+	margin-bottom: 5px;
+	list-style: none inside none;
+	display: inline-block;
+}
+ul.s4-breadcrumb .s4-breadcrumb-arrowcont {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background: transparent url('../img/glyphicons-halflings.png') no-repeat -262px -92px;
+}
+ul.s4-breadcrumb .s4-breadcrumb-arrowcont img {
+    display: none !important;
+}
+ul.s4-breadcrumb > li:first-child > span.s4-breadcrumb-arrowcont {
+	display: none;
+}
+ul.s4-breadcrumb a.s4-breadcrumbCurrentNode {
+	color: #000;
+}
+/* end breadcrumb*/
+
+/*search box*/
+.ms-srch-sb-border, .ms-srch-sb-border:hover, .ms-srch-sb-borderFocused {
+    border: none;
+}
+.ms-srch-sb > .ms-srch-sb-searchLink {
+    margin: 3px 0 0 1px;
+}
+.ms-srch-sb > .ms-srch-sb-searchLink:hover {
+	background: transparent none;
+}
+.ms-srch-sb > input {
+    margin: 0px 0px 10px 0px;
+}
+/*end search box*/
+/*end header*/
+
+/*top nav */
+.nav ul {
+	margin: 0px;
+}
+.nav li {
+	list-style: none inside none;
+	position: relative;
+}
+.navbar-inverse .brand, .navbar-inverse .nav li.static > a {
+    color: #999999;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+}
+.ms-core-listMenu-horizontalBox > .ms-core-listMenu-root > .ms-listMenu-editLink {
+    margin-left: 0px;
+}
+.ms-navedit-editLinksText {
+	display: block;
+}
+.nav.ms-core-listMenu-horizontalBox .ms-navedit-editLinksText > span > .ms-metadata {
+    color: #777777;
+}
+.nav.ms-core-listMenu-horizontalBox .ms-navedit-editLinksText .ms-verticalAlignMiddle {
+    vertical-align: inherit;
+}
+.ms-navedit-editLinksIconWrapper {
+    margin-bottom: -3px;
+}
+.nav.ms-core-listMenu-horizontalBox li.static > a,
+.nav.ms-core-listMenu-horizontalBox .ms-navedit-editLinksText {
+    color: #777777;
+    float: none;
+    padding: 10px 15px;
+    text-decoration: none;
+    margin: 0px;
+    border: none;
+}
+.ms-core-listMenu-horizontalBox .dynamic-children.additional-background {
+    margin: 0px;
+}
+.nav li.static > .ms-core-listMenu-item {
+	margin: 0px 15px 9px 0px;
+}
+.nav ul.dynamic {
+	margin-top: 5px;
+	top: 35px !important;
+	left: 0px !important;
+	width: 145px !important;
+	display: none;
+}
+.nav ul.dynamic ul.dynamic {
+	margin: 0px;
+	top: 0px !important;
+	left: 145px !important;
+}
+
+
+.navbar-inverse .nav li.static > a.selected,
+.navbar-inverse .nav li.static > a:hover {
+    background-color: #2284A1;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.125) inset;
+    color: #FFFFFF;
+    text-decoration: none;
+}
+/*end top nav */
+
+/*left nav */
+#sideNavBox {
+    float: none;
+	margin: 0px;
+    width: auto;
+}
+#sideNavBox.span3 {
+    float: left;
+    width: 23.4043%;
+}
+
+.sidebar-nav {
+    padding: 9px 0;
+}
+#sideNavBox ul {
+	margin: 0px;
+}
+li > a.ms-core-listMenu-item.ms-core-listMenu-selected:hover, li > a.ms-core-listMenu-item:hover, li > a.ms-core-listMenu-item:active,
+.ms-core-listMenu-selected:link, .ms-core-listMenu-selected:visited, .ms-core-listMenu-selected {
+    background-color: #0088CC;
+    color: #fff;
+}
+li > a.ms-core-listMenu-item.ms-core-listMenu-selected:hover {
+	color: #111;
+}
+/*end left nav */
+
+/* main content areas */
+div.table { 
+	margin: 0px; /*added by design manager admin page, ruins rd layout*/
+}
+.container-fluid .ms-table {
+    display: inherit;
+}
+.container-fluid .tableCol-75 {
+    display: inherit;
+}
+#ms-core-tableNoSpace {
+	display: block;
+}
+
+/*site settings*/
+/*Settings page - Add app page*/
+#idStorefrontManagementLeftNavBar.ms-core-sideNavBox-removeLeftMargin {
+	margin-left: 0;
+}
+a.ms-storefront-selectanchor, a.ms-storefront-selectanchor:link, a.ms-storefront-selectanchor:visited {
+	clear: both;
+	width: auto;
+}
+/*end site settings*/
+
+/*web part zones*/
+* [class^="span"] .ms-webpart-zone, * [class^="span"] .ms-webpart-cell-vertical, * [class^="span"] .ms-webpart-chrome-vertical {
+    display: block; /*forces zone to stay within confines of responsive zone*/
+}
+* [class^="span"] .ms-WPBody > table, * [class^="span"] .ms-WPBody > table > tbody, * [class^="span"] .ms-WPBody > table > tbody > tr, * [class^="span"] .ms-WPBody > table > tbody > tr > td {
+	display: block;
+	width: 100%;
+}
+* [class^="span"] .ms-WPBody > table img {
+	width: 100%; /*reset back to bootstrap for web part images*/
+}
+.ms-SPZone.ms-webpart-zone {
+    padding: 5px;
+}
+.ms-SPZone > .s4-wpcell, .ms-SPZone > .s4-wpcell-plain, .ms-rtestate-write > .ms-rte-wpbox > div > .s4-wpcell, .ms-rtestate-write > .ms-rte-wpbox > div > .s4-wpcell-plain {
+    padding: 5px 5px 10px;
+}
+/*web part properties*/
+.ms-ToolPaneBody select, .ms-ToolPaneBody textarea, .ms-ToolPaneBody input[type="text"], .ms-ToolPaneBody input[type="password"], .ms-ToolPaneBody input[type="datetime"], .ms-ToolPaneBody input[type="datetime-local"], .ms-ToolPaneBody input[type="date"], .ms-ToolPaneBody input[type="month"], .ms-ToolPaneBody input[type="time"], .ms-ToolPaneBody input[type="week"], .ms-ToolPaneBody input[type="number"], .ms-ToolPaneBody input[type="email"], .ms-ToolPaneBody input[type="url"], .ms-ToolPaneBody input[type="search"], .ms-ToolPaneBody input[type="tel"], .ms-ToolPaneBody input[type="color"], .ms-ToolPaneBody .uneditable-input {
+	margin-bottom: 0px;
+	width: auto;
+	height: auto;
+	line-height: 20px;
+}
+.ms-ToolPaneBody label {
+	display: inline-block;
+	margin-bottom: 0px;
+}
+/*end web part properties*/
+
+/*Gallery Grid in Banner/Homepage2*/
+ul.three-up {
+	display: block;
+	overflow: hidden;
+	margin: 0 -8px;
+	padding: 0;
+}
+ul.three-up > li {
+	display: block;
+	float: left;
+	height: auto;
+	margin: 0 8px 8px;
+	width: 27%;
+	list-style: none;
+}
+ul.three-up > li:nth-child(3n+1) {
+	clear: none;
+}
+
+/*end web part zones*/
+/* end main content areas */
+/*Fullscreen*/
+.ms-fullscreenmode #mainbody {
+	margin-left: 0px;
+	width: 100%;
+}
+/*end template styles */
+
+/*responsive*/
+@media (min-width: 1200px) {
+	.row-fluid [class*="span"] {
+	    margin-left: 2.12766%; /*the % set in bootstrap is too wide, breaks layouts */
+	}
+}
+@media (max-width: 979px) {
+	/*bootstrap issues*/
+	.row-fluid [class*="span"] {
+	    margin-left: 2.12766%; /*the % set in bootstrap is too wide, breaks layouts */
+	}
+	/*end bootstrap issues*/
+	.ms-core-listMenu-horizontalBox ul, .ms-core-listMenu-horizontalBox li, .ms-core-listMenu-horizontalBox .ms-core-listMenu-item, .ms-core-listMenu-horizontalBox > ul > li > table {
+	    display: block;
+	}
+	.nav.ms-core-listMenu-horizontalBox li.static > a {
+	    margin: 0 5px;
+	}
+	.nav ul.dynamic, .nav ul.dynamic ul.dynamic {
+		position: relative;
+		width: 95% !important;
+		left: auto !important;
+		top: auto !important;
+		margin: 0px 2.5%;
+		padding: 0px;
+		border: none;
+		background: transparent none;
+		box-shadow: none;
+	}
+	.ms-core-listMenu-horizontalBox .dynamic .dynamic-children.additional-background {
+		background-image: url("/_layouts/15/images/menu-down.gif?rev=23");
+	}
+	.nav.ms-core-listMenu-horizontalBox li.dynamic > a {
+	    border: medium none;
+	    color: #777777;
+	    float: none;
+	    margin: 0;
+	    padding: 10px 15px;
+	    text-decoration: none;
+	}
+	.nav.ms-core-listMenu-horizontalBox li.dynamic > a:hover {
+	    background-color: #111111;
+	    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.125) inset;
+	    color: #FFFFFF;
+	    text-decoration: none;
+	}
+	.ms-core-listMenu-horizontalBox .dynamic-children.additional-background {
+		width: 90%;
+		padding-right: 5%;
+		margin-right: 5%;
+		display: block;
+	}
+}
+@media (max-width: 767px) {
+	body {
+		padding-right: 0px;
+		padding-left: 0px;
+	}
+	[class*="span"], .uneditable-input[class*="span"], .row-fluid [class*="span"], #sideNavBox.span3 {
+	    -moz-box-sizing: border-box;
+	    float: none;
+	    margin-left: 0;
+	    width: 100%;
+	}
+	.ms-core-pageTitle {
+		white-space: normal;
+		font-size: 1.5em;
+	}
+	#s4-bodyContainer {
+	    padding: 0px 5px 0px 5px;
+	}
+	.searchbox {
+		float: none;
+	}	
+}
+@media (max-width: 600px) {
+	.ms-core-pageTitle {
+		white-space: normal;
+		font-size: 1.25em;
+	}
+}
+@media (max-width: 479px) {
+	#suiteBar {
+		display: block;
+		height: 61px;
+	}
+	#suiteBarLeft, #suiteBarRight {
+		display: inline-block;
+		width: 100%;
+	}
+}
+/*end responsive*/
+
+
