@@ -78,7 +78,7 @@ public class HomeController {
         //验证验证码是否正确
         Object verifyCode = params.get("verCode");
         Object currentCode = request.getSession().getAttribute("verCode");
-        if (StringUtil.isEmpty(currentCode) || StringUtil.isEmpty(verifyCode) || !currentCode.equals(verifyCode)) {
+        if (StringUtil.isEmpty(currentCode) || StringUtil.isEmpty(verifyCode) || !currentCode.toString().equalsIgnoreCase(verifyCode.toString())) {
             throw new BizException("verify", "fail", "验证码错误，请重试", HttpStatus.UNAUTHORIZED);
         }
         try {
