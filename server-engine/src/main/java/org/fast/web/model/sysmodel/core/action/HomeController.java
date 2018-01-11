@@ -49,7 +49,7 @@ import java.util.Map;
  */
 @Controller
 @Transactional
-@RequestMapping("/home/")
+@RequestMapping("/home")
 public class HomeController {
 
     @Autowired
