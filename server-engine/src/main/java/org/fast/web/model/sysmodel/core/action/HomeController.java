@@ -47,7 +47,7 @@ import java.util.Map;
  * @version 1.0
  * @timestamp 2017/10/3
  */
-@Controller
+@RestController
 @Transactional
 @RequestMapping("/home")
 public class HomeController {
@@ -71,7 +71,7 @@ public class HomeController {
      * @param response
      * @return
      */
-    @RequestMapping(value = "/user", method = RequestMethod.POST)
+    @RequestMapping(value = "/user.action", method = RequestMethod.POST)
     public ResponseEntity<ResultBody> register(@RequestBody ActionBody actionBody, HttpServletRequest request, HttpServletResponse response) {
         Map resultMap = new HashMap<>();
         Map params = actionBody.getDataBody();
@@ -101,7 +101,7 @@ public class HomeController {
      * @param response
      * @return
      */
-    @RequestMapping(value = "/very", method = RequestMethod.GET)
+    @RequestMapping(value = "/very.action", method = RequestMethod.GET)
     public ResponseEntity<ResultBody> generateVerifyImg(HttpServletRequest request, HttpServletResponse response) {
         Map resultMap = new HashMap<>();
         //生成随机字串
@@ -129,6 +129,7 @@ public class HomeController {
             throw new BizException("get verifyCode", "fail", "验证码生成失败，请重试", HttpStatus.BAD_GATEWAY);
         }
         return new ResponseEntity<ResultBody>(new ResultBody("verify", "success", resultMap, null), HttpStatus.OK);
+        //data:image/png;base64,
 
 
     }
