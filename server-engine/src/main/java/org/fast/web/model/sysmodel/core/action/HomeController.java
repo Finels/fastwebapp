@@ -103,6 +103,7 @@ public class HomeController {
      */
     @RequestMapping(value = "/very.action", method = RequestMethod.GET)
     public ResponseEntity<ResultBody> generateVerifyImg(HttpServletRequest request, HttpServletResponse response) {
+
         Map resultMap = new HashMap<>();
         //生成随机字串
         String verifyCode = VerifyCodeUtils.generateVerifyCode(4);
