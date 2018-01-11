@@ -1,6 +1,5 @@
 package org.fast.web.sys.config;
 
-import org.fast.web.interceptor.UserTokenInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -59,10 +58,10 @@ public class WebConfig extends WebMvcConfigurerAdapter {
      *
      * @param registry
      */
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new UserTokenInterceptor()).addPathPatterns("/bizmodules/**");
-    }
+//    @Override
+//    public void addInterceptors(InterceptorRegistry registry) {
+//        registry.addInterceptor(new UserTokenInterceptor()).addPathPatterns("/bizmodules/**");
+//    }
 
     /**
      * Specify the cache period for the resources served by the resource handler, in seconds. The default is to not send any cache headers but to rely on last-modified timestamps only. Set to 0 in order to send cache headers that prevent caching, or to a positive number of seconds to send cache headers with the given max-age value.

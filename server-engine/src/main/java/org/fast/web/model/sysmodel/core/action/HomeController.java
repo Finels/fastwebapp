@@ -2,14 +2,17 @@ package org.fast.web.model.sysmodel.core.action;
 
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.fast.web.dao.FastUserDao;
-import org.fast.web.dao.FastUserRepository;
-import org.fast.web.domain.FastUser;
+import org.apache.tomcat.util.codec.binary.Base64;
+import org.fast.web.dao.UserDao;
+import org.fast.web.domain.ActionBody;
 import org.fast.web.domain.ResultBody;
-import org.fast.web.model.sysmodel.core.service.intf.UserServiceIntf;
+import org.fast.web.domain.User;
 import org.fast.web.sys.config.SpringContextUtil;
-import org.fast.web.sys.exception.Bizexception;
-import org.fast.web.sys.exception.Error;
+import org.fast.web.sys.exception.BizException;
+import org.fast.web.sys.exception.SysException;
+import org.fast.web.util.BeanUtil;
+import org.fast.web.util.StringUtil;
+import org.fast.web.util.VerifyCodeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +28,9 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -48,7 +53,7 @@ import java.util.Map;
 public class HomeController {
 
     @Autowired
-    private UserServiceIntf userService;
+    private UserDao userDao;
 
     @Autowired
     private SpringContextUtil contextUtil;
@@ -58,52 +63,74 @@ public class HomeController {
     @Autowired
     private SqlSessionFactory sessionFactory;
 
-//    @RequestMapping("/")
-//    public String home(HttpServletRequest request, HttpServletResponse response) {
-//        return "index";
-//    }
-
-    @RequestMapping(value = "login.action")
-    @ResponseBody
-    public ResponseEntity<ResultBody> login(@RequestBody FastUser loginUser, HttpServletRequest request, HttpServletResponse response) {
-        request = (MultipartHttpServletRequest) request;
-        MultiValueMap fileMap = ((MultipartHttpServletRequest) request).getMultiFileMap();
-        SqlSession session = sessionFactory.openSession();
-
-        String currentUser = userService.getUserByUsername(loginUser.getUsername());
-//        FastUserDao sessionDao = session.getMapper(FastUserDao.class);
-//        FastUser currentUser1 = sessionDao.getUser(loginUser.getUsername());
-        List files = (List) fileMap.get("file");
-        MultipartFile file = (MultipartFile) files.get(0);
-        File realFile = new File(request.getSession().getServletContext().getRealPath("/") + File.separator + file.getOriginalFilename());
-        try {
-            file.transferTo(realFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new Bizexception("文件写入失败");
-        }
+    /**
+     * 注册用户信息
+     *
+     * @param actionBody
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/user", method = RequestMethod.POST)
+    public ResponseEntity<ResultBody> register(@RequestBody ActionBody actionBody, HttpServletRequest request, HttpServletResponse response) {
         Map resultMap = new HashMap<>();
-        resultMap.put("signature", "test123");
-        return new ResponseEntity<ResultBody>(new ResultBody("logined", "success", resultMap, request.getContextPath()), HttpStatus.OK);
-
+        Map params = actionBody.getDataBody();
+        //验证验证码是否正确
+        Object verifyCode = params.get("verCode");
+        Object currentCode = request.getSession().getAttribute("verCode");
+        if (!StringUtil.isNotEmpty(currentCode) && currentCode.equals(verifyCode)) {
+            throw new BizException("verify", "fail", "验证码错误，请重试", HttpStatus.UNAUTHORIZED);
+        }
+        try {
+            User currentUser = (User) BeanUtil.mapToObject(params, User.class);
+            userDao.save(currentUser);
+            //注册成功后，删除session中保存的验证码
+            request.getSession().removeAttribute("verCode");
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new SysException("get verifyCode", "fail", "注册失败，请重试", "BeanUtil:map to Object failed,check the stackTrace prints!");
+        }
+        return new ResponseEntity<ResultBody>(new ResultBody("register", "success", resultMap, null), HttpStatus.OK);
     }
 
-    @RequestMapping("save.action")
-    public void doSave(@RequestBody FastUser user, HttpServletRequest request, HttpServletResponse response) {
-        user.setUuid("123123");
-//        repository.save(user);
+
+    /**
+     * 获取验证码图片流，验证码字符串缓存在HttpSession中
+     *
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/very", method = RequestMethod.GET)
+    public ResponseEntity<ResultBody> generateVerifyImg(HttpServletRequest request, HttpServletResponse response) {
+        Map resultMap = new HashMap<>();
+        //生成随机字串
+        String verifyCode = VerifyCodeUtils.generateVerifyCode(4);
+        //生成图片
+        int w = 100, h = 30;
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        String verifyImgString;
         try {
-            response.sendRedirect("/index.jsp");
-            return;
+            VerifyCodeUtils.outputImage(w, h, os, verifyCode);
+            byte[] a = os.toByteArray();
+            verifyImgString = Base64.encodeBase64String(a);
         } catch (IOException e) {
             e.printStackTrace();
-            throw new Bizexception("未知错误");
+            throw new SysException("get verifyCode", "fail", "系统错误，请联系管理员", "verify code:generate the verifyCodeImage failed,check the stackTrace prints!");
         }
-    }
+        if (StringUtil.isNotEmpty(verifyImgString)) {
+            //将验证码存入会话session
+            HttpSession session = request.getSession();
+            session.removeAttribute("verCode");
+            session.setAttribute("verCode", verifyCode.toLowerCase());
+            //将图片流放入接口返回列表中
+            resultMap.put("verCodeImg", verifyImgString);
+        } else {
+            throw new BizException("get verifyCode", "fail", "验证码生成失败，请重试", HttpStatus.BAD_GATEWAY);
+        }
+        return new ResponseEntity<ResultBody>(new ResultBody("verify", "success", resultMap, null), HttpStatus.OK);
 
 
-    @ExceptionHandler({Bizexception.class})
-    public ResponseEntity exception(Bizexception e, HttpServletRequest request) {
-        return new ResponseEntity<Error>(new Error("warning", "用户校验失败，请重新登录", request.getContextPath()), HttpStatus.NON_AUTHORITATIVE_INFORMATION);
     }
+
 }

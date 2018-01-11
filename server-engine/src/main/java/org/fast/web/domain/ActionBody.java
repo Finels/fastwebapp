@@ -1,49 +1,71 @@
 package org.fast.web.domain;
 
-import org.apache.struts2.json.JSONException;
-import org.apache.struts2.json.JSONUtil;
-import org.fast.web.util.StringUtil;
-
-import java.util.ArrayList;
 import java.util.Map;
 
 /**
- * Description:  BillcardinoutManager
+ * Description:  RequestBean
  * Copyright: © 2017 CSNT. All rights reserved.
  * Company: CSNT
  *
  * @author 付尧
  * @version 1.0
- * @timestamp 2017/10/13
+ * @timestamp 2017/11/3
  */
 public class ActionBody {
-    private String actionUrl;
-    private String postData;
-    private Map postMap;
+    private Map dataBody;
+    private String signature;//签名，每次请求需要验证
+    private String timestamp;//时间戳
+    private String networkDelay;//当前网络延迟
+    private String sessionId;
 
-    public String getActionUrl() {
-        return actionUrl;
+    public Map getDataBody() {
+        return dataBody;
     }
 
-    public void setActionUrl(String actionUrl) {
-        this.actionUrl = actionUrl;
+    public void setDataBody(Map dataBody) {
+        this.dataBody = dataBody;
     }
 
-    public String getPostData() {
-        return postData;
+    public String getSignature() {
+        return signature;
     }
 
-    public void setPostData(String postData) {
-        this.postData = postData;
+    public void setSignature(String signature) {
+        this.signature = signature;
     }
 
-    public Map getPostMap() throws JSONException {
-        Map inMap = (Map) JSONUtil.deserialize(this.postData);
-        inMap.put("requestDataJson", this.actionUrl + "\n" + StringUtil.replaceLast(this.postData.replaceAll("\"signature\":\"[a-z0-9]+\"", ""), ",", ""));
-        return inMap;
+    public String getTimestamp() {
+        return timestamp;
     }
 
-    public void setPostMap(Map postMap) {
-        this.postMap = postMap;
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public String getNetworkDelay() {
+        return networkDelay;
+    }
+
+    public void setNetworkDelay(String networkDelay) {
+        this.networkDelay = networkDelay;
+    }
+
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
+    }
+
+    public ActionBody() {
+    }
+
+    public ActionBody(Map dataBody, String signature, String timestamp, String networkDelay, String sessionId) {
+        this.dataBody = dataBody;
+        this.signature = signature;
+        this.timestamp = timestamp;
+        this.networkDelay = networkDelay;
+        this.sessionId = sessionId;
     }
 }

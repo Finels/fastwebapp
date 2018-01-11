@@ -1,7 +1,5 @@
 package org.fast.web.sys.config;
 
-import org.fast.web.model.sysmodel.core.service.impl.UserServiceImpl;
-import org.fast.web.model.sysmodel.core.service.intf.UserServiceIntf;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
@@ -68,11 +66,6 @@ public class CacheConfig {
 //    public EhCacheCacheManager ehcacheManager(CacheManager cm) {
 //        return new EhCacheCacheManager(cm);
 //    }
-    @Bean
-    public UserServiceIntf userServiceIntf() {
-        return new UserServiceImpl();
-    }
-
     @Bean
     public CacheManager cacheManager(RedisTemplate redisTemplate) {
         return new RedisCacheManager(redisTemplate, new ArrayList<String>() {

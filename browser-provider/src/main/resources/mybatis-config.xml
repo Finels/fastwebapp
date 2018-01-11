@@ -8,7 +8,7 @@
     default="development"，id="development"，两个的属性值必须一致
      -->
     <!-- 在配置文件中 关联包下的 接口类-->
-    <mappers>
-        <mapper class="org.fast.web.dao.FastUserDao"/>
-    </mappers>
+    <!--<mappers>-->
+        <!--<mapper class="org.fast.web.dao.FastUserDao"/>-->
+    <!--</mappers>-->
 </configuration>

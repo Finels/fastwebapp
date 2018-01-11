@@ -16,12 +16,29 @@ public class ResultBody {
     private String resultCode;
     private Map resultBody;
     private String redirectUrl;
+    private String resultInfo;
+
+    public ResultBody(String apiName, String resultCode, String resultInfo, Map resultBody, String redirectUrl) {
+        this.apiName = apiName;
+        this.resultCode = resultCode;
+        this.resultBody = resultBody;
+        this.redirectUrl = redirectUrl;
+        this.resultInfo = resultInfo;
+    }
 
     public ResultBody(String apiName, String resultCode, Map resultBody, String redirectUrl) {
         this.apiName = apiName;
         this.resultCode = resultCode;
         this.resultBody = resultBody;
         this.redirectUrl = redirectUrl;
+    }
+
+    public String getResultInfo() {
+        return resultInfo;
+    }
+
+    public void setResultInfo(String resultInfo) {
+        this.resultInfo = resultInfo;
     }
 
     public String getApiName() {

@@ -1,24 +1,33 @@
-package org.fast.web.sys.exception;
+package org.fast.web.domain;
 
 /**
- * Description:  Error消息体
+ * Description:  Warn
  * Copyright: © 2017 CSNT. All rights reserved.
  * Company: CSNT
  *
  * @author 付尧
  * @version 1.0
- * @timestamp 2017/11/8
+ * @timestamp 2017/12/24
  */
-public class Error {
-
+public class Warn {
+    private String apiName;
     private String errorCode;
     private String errorDescription;
     private String redirectUrl;
 
-    public Error(String errorCode, String errorDescription, String redirectUrl) {
+    public Warn(String apiName,String errorCode, String errorDescription, String redirectUrl) {
         this.errorCode = errorCode;
         this.errorDescription = errorDescription;
         this.redirectUrl = redirectUrl;
+        this.apiName = apiName;
+    }
+
+    public String getApiName() {
+        return apiName;
+    }
+
+    public void setApiName(String apiName) {
+        this.apiName = apiName;
     }
 
     public String getRedirectUrl() {
