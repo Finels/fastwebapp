@@ -55,13 +55,7 @@ public class HomeController {
     @Autowired
     private UserDao userDao;
 
-    @Autowired
-    private SpringContextUtil contextUtil;
-
     private Logger logeger = LoggerFactory.getLogger(this.getClass());
-
-    @Autowired
-    private SqlSessionFactory sessionFactory;
 
     /**
      * 注册用户信息
