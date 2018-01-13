@@ -3,6 +3,8 @@ package org.fast.web.sys.config;
 import bitronix.tm.BitronixTransactionManager;
 import bitronix.tm.TransactionManagerServices;
 import bitronix.tm.resource.jdbc.PoolingDataSource;
+import org.apache.commons.dbcp2.BasicDataSource;
+import org.apache.commons.dbcp2.BasicDataSourceFactory;
 import org.fast.web.model.ModelScanTag;
 import org.fast.web.sys.SystemScanTag;
 import org.springframework.beans.factory.BeanFactory;
@@ -24,6 +26,7 @@ import org.springframework.dao.annotation.PersistenceExceptionTranslationPostPro
 import org.springframework.expression.ConstructorResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
+import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor;
@@ -32,7 +35,10 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.jta.JtaTransactionManager;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+import javax.transaction.TransactionManager;
 import javax.transaction.Transactional;
 import java.io.FileReader;
 import java.io.IOException;
@@ -53,7 +59,7 @@ import java.util.*;
 @EnableTransactionManagement //启用事务注解扫描器
 @EnableAspectJAutoProxy
 @ComponentScan(basePackages = "org.fast.web")
-@PropertySource({"WEB-INF/classes/database.properties", "WEB-INF/classes/mongo.properties"})
+@PropertySource({"WEB-INF/classes/dbcp.properties", "WEB-INF/classes/mongo.properties", "WEB-INF/classes/redis.properties"})
 public class ApplicationContextConfig {
 
 
@@ -63,7 +69,7 @@ public class ApplicationContextConfig {
     @Bean
     public PropertySourcesPlaceholderConfigurer setProperties(SpringContextUtil contextUtil) throws IOException {
         PropertySourcesPlaceholderConfigurer placeholderConfigurer = new PropertySourcesPlaceholderConfigurer();
-        Resource r = contextUtil.getApplicationContext().getResource("WEB-INF/classes/database.properties");
+        Resource r = contextUtil.getApplicationContext().getResource("WEB-INF/classes/dbcp.properties");
         Resource mongoConfig = contextUtil.getApplicationContext().getResource("WEB-INF/classes/mongo.properties");
         placeholderConfigurer.setLocations(new Resource[]{r, mongoConfig});
         return placeholderConfigurer;
@@ -81,6 +87,42 @@ public class ApplicationContextConfig {
 //        return sfb;
 //    }
 
+    /**
+     * mysql数据源
+     *
+     * @param env
+     * @return
+     */
+    @Bean
+    public DataSource dataSource(Environment env, SpringContextUtil contextUtil) throws Exception {
+        Properties database = new Properties();
+        database.load(contextUtil.getApplicationContext().getResource("WEB-INF/classes/dbcp.properties").getInputStream());
+        BasicDataSource dataSource = BasicDataSourceFactory.createDataSource(database);
+        return dataSource;
+    }
+
+    @Bean
+    public JpaVendorAdapter jpaVendorAdapter() {
+        HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
+        adapter.setDatabase(Database.MYSQL);
+        adapter.setShowSql(true);
+        adapter.setDatabasePlatform("org.hibernate.dialect.MySQLDialect");
+        return adapter;
+    }
+
+    /**
+     * spring-data-jpa相关配置实现类
+     * <p>
+     * 如果声明bean时不指定name，那么方法名会默认映射为bean-name，而EntityManagerFactory类默认的bean-name刚好为entityManagerFactory
+     */
+    @Bean(name = "entityManagerFactory")
+    public LocalContainerEntityManagerFactoryBean setEntityManagerFactory(DataSource datasource, JpaVendorAdapter jpaVendorAdapter) {
+        LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
+        entityManagerFactoryBean.setPackagesToScan(new String[]{"org.fast.web.domain", "org.fast.web.dao"});
+        entityManagerFactoryBean.setDataSource(datasource);
+        entityManagerFactoryBean.setJpaVendorAdapter(jpaVendorAdapter);
+        return entityManagerFactoryBean;
+    }
 
     @Bean
     public BeanPostProcessor persistenceTranslation() {
@@ -92,11 +134,12 @@ public class ApplicationContextConfig {
         return new PersistenceAnnotationBeanPostProcessor();
     }
 
-    /**
-     * 配置事务管理，
-     * 当前使用的是jta事务管理器，支持多数据源即分布式事务管理
-     * @return
-     */
+//    /**
+//     * 配置事务管理，
+//     * 当前使用的是jta事务管理器，支持多数据源即分布式事务管理
+//     *
+//     * @return
+//     */
 //    @Bean(name = "transactionManager")
 //    public JtaTransactionManager transactionManager(BitronixTransactionManager btm) {
 //        JtaTransactionManager transactionManager = new JtaTransactionManager();
@@ -121,9 +164,9 @@ public class ApplicationContextConfig {
      * @return
      */
     @Bean
-    public DataSourceTransactionManager transactionManager(@Qualifier("dataSourceJpa") DataSource dataSource) {
-        DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
-        transactionManager.setDataSource(dataSource);
+    public JpaTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
+        JpaTransactionManager transactionManager = new JpaTransactionManager();
+        transactionManager.setEntityManagerFactory(entityManagerFactory);
         return transactionManager;
     }
 

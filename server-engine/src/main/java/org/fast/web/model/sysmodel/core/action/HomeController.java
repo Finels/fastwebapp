@@ -21,6 +21,7 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,7 +30,6 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.transaction.Transactional;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -102,7 +102,7 @@ public class HomeController {
         //生成随机字串
         String verifyCode = VerifyCodeUtils.generateVerifyCode(4);
         //生成图片
-        int w = 100, h = 30;
+        int w = 110, h = 35;
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         String verifyImgString;
         try {

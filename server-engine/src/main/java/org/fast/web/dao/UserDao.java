@@ -3,6 +3,7 @@ package org.fast.web.dao;
 import org.fast.web.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 /**
@@ -14,6 +15,7 @@ import java.util.List;
  * @version 1.0
  * @timestamp 2018/1/8
  */
+@Transactional
 public interface UserDao extends JpaRepository<User, String> {
 
     List<User> findByUuidNotNull();
