@@ -89,7 +89,7 @@ public class HomeController {
 
 
     /**
-     * 获取验证码图片流，验证码字符串缓存在HttpSession中
+     * 获取验证码图片流，验证码字符串缓存在HttpSession中，验证码暂无超时操作
      *
      * @param request
      * @param response
