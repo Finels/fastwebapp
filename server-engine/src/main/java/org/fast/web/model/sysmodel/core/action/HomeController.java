@@ -33,6 +33,7 @@ import javax.servlet.http.HttpSession;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -77,6 +78,7 @@ public class HomeController {
         }
         try {
             User currentUser = (User) BeanUtil.mapToObject(params, User.class);
+            currentUser.setCreattime(new Date());
             userDao.save(currentUser);
             //注册成功后，删除session中保存的验证码
             request.getSession().removeAttribute("verCode");

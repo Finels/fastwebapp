@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.Date;
 
 /**
  * Description:  用户实体类
@@ -29,6 +30,7 @@ public class User {
     private String country;
     private String address;
     private String email;
+    private Date creattime;
 
     public User() {
     }
@@ -114,5 +116,13 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Date getCreattime() {
+        return creattime;
+    }
+
+    public void setCreattime(Date creattime) {
+        this.creattime = creattime;
     }
 }
