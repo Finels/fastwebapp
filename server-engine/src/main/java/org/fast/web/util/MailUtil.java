@@ -1,5 +1,6 @@
 package org.fast.web.util;
 
+import com.sun.mail.util.MailSSLSocketFactory;
 import org.fast.web.sys.config.SpringContextUtil;
 import org.fast.web.sys.exception.BizException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,13 +49,20 @@ public class MailUtil {
         // 发送邮件协议名称
         props.setProperty("mail.transport.protocol", "smtp");
 
-
-        Session session = Session.getInstance(props);
-
-        Message msg = new MimeMessage(session);
         Multipart mainpart = new MimeMultipart();
         BodyPart html = new MimeBodyPart();
+        MailSSLSocketFactory sf = null;
+
         try {
+            //开启ssl访问协议
+            sf = new MailSSLSocketFactory();
+            sf.setTrustAllHosts(true);
+            props.put("mail.smtp.ssl.enable", "true");
+            props.put("mail.smtp.ssl.socketFactory", sf);
+
+            Session session = Session.getInstance(props);
+            Message msg = new MimeMessage(session);
+
             html.setContent(getMailHtml(code), "text/html; charset=utf-8");
             mainpart.addBodyPart(html);
 
@@ -66,7 +74,7 @@ public class MailUtil {
             transport.connect("smtp.163.com", 465, "anyunfei3@163.com", "fjywokao4");
             transport.sendMessage(msg, new Address[]{new InternetAddress(to)});
             transport.close();
-        } catch (MessagingException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             throw new BizException("send mail", "fail", "注册邮件发送失败，请重试", HttpStatus.BAD_GATEWAY);
         }
