@@ -63,7 +63,7 @@ public class MailUtil {
             msg.setFrom(new InternetAddress("anyunfei3@163.com"));
 
             Transport transport = session.getTransport();
-            transport.connect("smtp.163.com", "anyunfei3@163.com", "fjywokao4");
+            transport.connect("smtp.163.com", 465, "anyunfei3@163.com", "fjywokao4");
             transport.sendMessage(msg, new Address[]{new InternetAddress(to)});
             transport.close();
         } catch (MessagingException e) {
