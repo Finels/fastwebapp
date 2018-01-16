@@ -17,6 +17,8 @@ import javax.mail.internet.MimeMultipart;
 import java.io.*;
 import java.nio.Buffer;
 import java.util.Properties;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 /**
  * Description:  邮件发送帮助类
@@ -32,52 +34,58 @@ public class MailUtil {
 
     private static SpringContextUtil contextUtil;
 
+    private static Executor executor = Executors.newFixedThreadPool(30);
+
     @Autowired
     public void setContextUtil(SpringContextUtil contextUtil) {
         MailUtil.contextUtil = contextUtil;
     }
 
     public static void sendMail(String to, String code) {
-        Properties props = new Properties();
 
-        // 开启debug调试
-        props.setProperty("mail.debug", "true");
-        // 发送服务器需要身份验证
-        props.setProperty("mail.smtp.auth", "true");
-        // 设置邮件服务器主机名
-        props.setProperty("mail.host", "smtp.163.com");
-        // 发送邮件协议名称
-        props.setProperty("mail.transport.protocol", "smtp");
+        Runnable task = new Runnable() {
+            @Override
+            public void run() {
+                Properties props = new Properties();
+                // 发送服务器需要身份验证
+                props.setProperty("mail.smtp.auth", "true");
+                // 设置邮件服务器主机名
+                props.setProperty("mail.host", "smtp.163.com");
+                // 发送邮件协议名称
+                props.setProperty("mail.transport.protocol", "smtp");
 
-        Multipart mainpart = new MimeMultipart();
-        BodyPart html = new MimeBodyPart();
-        MailSSLSocketFactory sf = null;
+                Multipart mainpart = new MimeMultipart();
+                BodyPart html = new MimeBodyPart();
+                MailSSLSocketFactory sf = null;
 
-        try {
-            //开启ssl访问协议
-            sf = new MailSSLSocketFactory();
-            sf.setTrustAllHosts(true);
-            props.put("mail.smtp.ssl.enable", "true");
-            props.put("mail.smtp.ssl.socketFactory", sf);
+                try {
+                    //开启ssl访问协议
+                    sf = new MailSSLSocketFactory();
+                    sf.setTrustAllHosts(true);
+                    props.put("mail.smtp.ssl.enable", "true");
+                    props.put("mail.smtp.ssl.socketFactory", sf);
 
-            Session session = Session.getInstance(props);
-            Message msg = new MimeMessage(session);
+                    Session session = Session.getInstance(props);
+                    Message msg = new MimeMessage(session);
 
-            html.setContent(getMailHtml(code), "text/html; charset=utf-8");
-            mainpart.addBodyPart(html);
+                    html.setContent(getMailHtml(code), "text/html; charset=utf-8");
+                    mainpart.addBodyPart(html);
 
-            msg.setSubject("Asia-Pacific Society for Immunodeficiencies");
-            msg.setContent(mainpart);
-            msg.setFrom(new InternetAddress("anyunfei3@163.com"));
+                    msg.setSubject("Asia-Pacific Society for Immunodeficiencies");
+                    msg.setContent(mainpart);
+                    msg.setFrom(new InternetAddress("anyunfei3@163.com"));
 
-            Transport transport = session.getTransport();
-            transport.connect("smtp.163.com", 465, "anyunfei3@163.com", "fjywokao4");
-            transport.sendMessage(msg, new Address[]{new InternetAddress(to)});
-            transport.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new BizException("send mail", "fail", "注册邮件发送失败，请重试", HttpStatus.BAD_GATEWAY);
-        }
+                    Transport transport = session.getTransport();
+                    transport.connect("smtp.163.com", 465, "anyunfei3@163.com", "fjywokao4");
+                    transport.sendMessage(msg, new Address[]{new InternetAddress(to)});
+                    transport.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    throw new BizException("send mail", "fail", "注册邮件发送失败，请重试", HttpStatus.BAD_GATEWAY);
+                }
+            }
+        };
+        executor.execute(task);
     }
 
     /**
