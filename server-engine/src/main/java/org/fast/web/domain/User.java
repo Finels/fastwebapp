@@ -31,6 +31,7 @@ public class User {
     private String address;
     private String email;
     private Date creattime;
+    private String code;
 
     public User() {
     }
@@ -124,5 +125,13 @@ public class User {
 
     public void setCreattime(Date creattime) {
         this.creattime = creattime;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 }

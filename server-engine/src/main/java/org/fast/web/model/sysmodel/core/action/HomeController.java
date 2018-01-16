@@ -11,6 +11,7 @@ import org.fast.web.sys.config.SpringContextUtil;
 import org.fast.web.sys.exception.BizException;
 import org.fast.web.sys.exception.SysException;
 import org.fast.web.util.BeanUtil;
+import org.fast.web.util.MailUtil;
 import org.fast.web.util.StringUtil;
 import org.fast.web.util.VerifyCodeUtils;
 import org.slf4j.Logger;
@@ -76,12 +77,26 @@ public class HomeController {
         if (StringUtil.isEmpty(currentCode) || StringUtil.isEmpty(verifyCode) || !currentCode.toString().equalsIgnoreCase(verifyCode.toString())) {
             throw new BizException("verify", "fail", "验证码错误，请重试", HttpStatus.UNAUTHORIZED);
         }
+        //生成注册码
+        int inviteCode = 0;
+        boolean b = true;
+        while (b) {
+            inviteCode = (int) ((Math.random() * 9 + 1) * 10000);
+            List a = userDao.findByCode(inviteCode + "");
+            if (a.size() == 0) {
+                b = false;
+            }
+        }
+
         try {
             User currentUser = (User) BeanUtil.mapToObject(params, User.class);
             currentUser.setCreattime(new Date());
+            currentUser.setCode(inviteCode + "");
             userDao.save(currentUser);
             //注册成功后，删除session中保存的验证码
             request.getSession().removeAttribute("verCode");
+            //发送注册邮件
+            MailUtil.sendMail(currentUser.getEmail(), inviteCode + "");
         } catch (Exception e) {
             e.printStackTrace();
             throw new SysException("get verifyCode", "fail", "注册失败，请重试", "BeanUtil:map to Object failed,check the stackTrace prints!");

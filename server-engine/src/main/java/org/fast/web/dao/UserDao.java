@@ -20,4 +20,6 @@ public interface UserDao extends JpaRepository<User, String> {
 
     List<User> findByUuidNotNull();
 
+    List findByCode(String code);
+
 }
