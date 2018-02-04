@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import javax.mail.Multipart;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -149,12 +150,12 @@ public class HomeController {
     }
 
     @RequestMapping("/upload.action")
-    public ResponseEntity<ResultBody> uploadFile(@RequestBody ActionBody actionBody, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<ResultBody> uploadFile(HttpServletRequest request, HttpServletResponse response) {
         final String fileHomePath = "apsid2018";
-        Map params = actionBody.getDataBody();
-        String RNcode = params.get("rncode").toString();//前台传入的用户RN码
-        Object verifyCode = params.get("verCode");//前台传入的验证码
-        String fileType = params.get("fileType").toString();//前台传入的文件类型
+        Map params = request.getParameterMap();
+        String RNcode = ((String[]) params.get("regCode"))[0];//前台传入的用户RN码
+        String verifyCode = ((String[]) params.get("verCode"))[0];//前台传入的验证码
+        String fileType = ((String[]) params.get("forum"))[0];//前台传入的文件类型
         //验证验证码是否正确
         Object currentCode = request.getSession().getAttribute("verCode");
         if (StringUtil.isEmpty(currentCode) || StringUtil.isEmpty(verifyCode) || !currentCode.toString().equalsIgnoreCase(verifyCode.toString())) {
@@ -167,39 +168,6 @@ public class HomeController {
         }
         User currentUser = (User) (a.get(0));
         String userId = currentUser.getUuid();
-        //==================================保存文件，同时记录到数据库中======================================
-        //构造文件路径，为fileHomePath+fileName
-        String basePath = request.getSession().getServletContext().getRealPath("/");
-        basePath = basePath.replace("ROOT", "files");
-        File fileDir = new File(basePath + File.separator + fileHomePath + File.separator + userId);
-        if (!fileDir.exists()) {
-            fileDir.mkdirs();
-        }
-        Map<String, MultipartFile> fileMap = ((MultipartHttpServletRequest) request).getFileMap();
-        for (Map.Entry<String, MultipartFile> mfile : fileMap.entrySet()) {
-            //取得前端上传的文件
-            MultipartFile file = mfile.getValue();
-            if (file != null) {
-                String fileName = file.getOriginalFilename();
-                File currentFile = new File(fileDir.getAbsoluteFile() + File.separator + fileName);
-                try {
-                    file.transferTo(currentFile);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    throw new SysException("File Upload", "fail", "the file can not upload,please contact system manager.", "file upload failed.An IO exception has been occurred,check the console prints and the disk space remain");
-                }
-                //保存到数据库
-                ApsidFile apsidFile = new ApsidFile();
-                apsidFile.setRncode(RNcode);
-                apsidFile.setUserid(userId);
-                apsidFile.setFiletype(fileType);
-                apsidFile.setFilename(fileName);
-                apsidFile.setCreatetime(new Date());
-                apsidFile.setFilepath(fileHomePath + File.separator + userId + File.separator + fileName);
-                fileDao.save(apsidFile);
-            }
-        }
-        //===================================文件上传成功，发送邮件====================================
         //生成CA码
         int CACode = 0;
         boolean tag = true;
@@ -209,8 +177,57 @@ public class HomeController {
                 tag = false;
             }
         }
+        //保存数据库记录
+
+        //==================================保存文件，同时记录到数据库中======================================
+        //构造文件路径，为fileHomePath+fileName
+        String basePath = request.getSession().getServletContext().getRealPath("/");
+        basePath = basePath.replace("ROOT", "files");
+        File fileDir = new File(basePath + File.separator + fileHomePath + File.separator + userId);
+        if (!fileDir.exists()) {
+            fileDir.mkdirs();
+        }
+        //==================================解析前端传入的文件====================================
+        MultipartFile file = null;
+        String fileName = null;
+        Map<String, MultipartFile> fileMap = ((MultipartHttpServletRequest) request).getFileMap();
+        for (Map.Entry<String, MultipartFile> mfile : fileMap.entrySet()) {
+            //取得前端上传的文件
+            file = mfile.getValue();
+            if (file != null) {
+                fileName = file.getOriginalFilename();
+            }
+        }
+        //====================================保存到数据库======================================
+        ApsidFile apsidFile;
+        //查询数据库中是否已经存在该用户上传的记录了
+        List temp = fileDao.findByUserid(userId);
+        if (temp.size() > 0) {
+            apsidFile = (ApsidFile) temp.get(0);
+        } else {
+            apsidFile = new ApsidFile();
+        }
+        apsidFile.setRncode(RNcode);
+        apsidFile.setCacode(CACode + "");
+        apsidFile.setUserid(userId);
+        apsidFile.setFiletype(fileType);
+        apsidFile.setFilename(fileName);
+        apsidFile.setCreatetime(new Date());
+        apsidFile.setFilepath(fileHomePath + File.separator + userId + File.separator + fileName);
+        fileDao.saveAndFlush(apsidFile);
+        //================================保存文件到服务器=======================================
+        File currentFile = new File(fileDir.getAbsoluteFile() + File.separator + fileName);
+        try {
+            file.transferTo(currentFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new SysException("File Upload", "fail", "the file can not upload,please contact system manager.", "file upload failed.An IO exception has been occurred,check the console prints and the disk space remain");
+        }
+
+        //===================================文件上传成功，发送邮件====================================
         //发送注册邮件
         MailUtil.sendMail(currentUser.getEmail(), CACode + "", CommonAttribute.ARTICLE_MAIL_TEMPLATE);
+
 
         return new ResponseEntity<ResultBody>(new ResultBody("File Upload", "success", null, null), HttpStatus.OK);
 

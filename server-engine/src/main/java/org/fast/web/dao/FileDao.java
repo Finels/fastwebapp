@@ -18,4 +18,7 @@ public interface FileDao extends JpaRepository<ApsidFile, String> {
     public List findByFiletype(String filetype);
 
     public List findByCacode(String cacode);
+
+    public List findByUserid(String userId);
+
 }
