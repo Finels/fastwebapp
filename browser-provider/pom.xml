@@ -9,7 +9,7 @@
     <artifactId>browser-provider</artifactId>
 
     <properties>
-        <build.encoding>UTF-8</build.encoding>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <build>

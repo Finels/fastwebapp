@@ -33,9 +33,9 @@ public class FastWebInitializer extends AbstractAnnotationConfigDispatcherServle
         return new String[]{"*.action"};
     }
 
-    @Override
-    public void onStartup(ServletContext servletContext) throws ServletException {
-        super.onStartup(servletContext);
-        servletContext.setInitParameter("spring.profiles.active", "mybatis");
-    }
+//    @Override
+//    public void onStartup(ServletContext servletContext) throws ServletException {
+//        super.onStartup(servletContext);
+//        servletContext.setInitParameter("spring.profiles.active", "mybatis");
+//    }
 }
