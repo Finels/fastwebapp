@@ -3,8 +3,11 @@ package org.fast.web.model.sysmodel.core.action;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.tomcat.util.codec.binary.Base64;
+import org.fast.web.attribute.CommonAttribute;
+import org.fast.web.dao.FileDao;
 import org.fast.web.dao.UserDao;
 import org.fast.web.domain.ActionBody;
+import org.fast.web.domain.ApsidFile;
 import org.fast.web.domain.ResultBody;
 import org.fast.web.domain.User;
 import org.fast.web.sys.config.SpringContextUtil;
@@ -34,10 +37,7 @@ import javax.servlet.http.HttpSession;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -56,6 +56,8 @@ public class HomeController {
 
     @Autowired
     private UserDao userDao;
+    @Autowired
+    private FileDao fileDao;
 
     private Logger logeger = LoggerFactory.getLogger(this.getClass());
 
@@ -96,7 +98,7 @@ public class HomeController {
             //注册成功后，删除session中保存的验证码
             request.getSession().removeAttribute("verCode");
             //发送注册邮件
-            MailUtil.sendMail(currentUser.getEmail(), inviteCode + "");
+            MailUtil.sendMail(currentUser.getEmail(), inviteCode + "", CommonAttribute.REGISTER_MAIL_TEMPLATE);
         } catch (Exception e) {
             e.printStackTrace();
             throw new SysException("get verifyCode", "fail", "注册失败，请重试", "BeanUtil:map to Object failed,check the stackTrace prints!");
@@ -143,6 +145,73 @@ public class HomeController {
         return new ResponseEntity<ResultBody>(new ResultBody("verify", "success", resultMap, null), HttpStatus.OK);
         //data:image/png;base64,
 
+
+    }
+
+    @RequestMapping("/upload.action")
+    public ResponseEntity<ResultBody> uploadFile(@RequestBody ActionBody actionBody, HttpServletRequest request, HttpServletResponse response) {
+        final String fileHomePath = "apsid2018";
+        Map params = actionBody.getDataBody();
+        String RNcode = params.get("rncode").toString();//前台传入的用户RN码
+        Object verifyCode = params.get("verCode");//前台传入的验证码
+        String fileType = params.get("fileType").toString();//前台传入的文件类型
+        //验证验证码是否正确
+        Object currentCode = request.getSession().getAttribute("verCode");
+        if (StringUtil.isEmpty(currentCode) || StringUtil.isEmpty(verifyCode) || !currentCode.toString().equalsIgnoreCase(verifyCode.toString())) {
+            throw new BizException("verify", "fail", "Validation code is incorrect,please check it and try again.", HttpStatus.UNAUTHORIZED);
+        }
+        //验证用户RN码是否正确，并绑定文件
+        List a = userDao.findByCode(RNcode);
+        if (a.size() == 0) {
+            throw new BizException("RNcode verify", "fail", "the RNcode is not found,please check out and try again.", HttpStatus.NOT_FOUND);
+        }
+        User currentUser = (User) (a.get(0));
+        String userId = currentUser.getUuid();
+        //==================================保存文件，同时记录到数据库中======================================
+        //构造文件路径，为fileHomePath+fileName
+        String basePath = request.getSession().getServletContext().getRealPath("/");
+        basePath = basePath.replace("ROOT", "files");
+        File fileDir = new File(basePath + File.separator + fileHomePath + File.separator + userId);
+        if (!fileDir.exists()) {
+            fileDir.mkdirs();
+        }
+        Map<String, MultipartFile> fileMap = ((MultipartHttpServletRequest) request).getFileMap();
+        for (Map.Entry<String, MultipartFile> mfile : fileMap.entrySet()) {
+            //取得前端上传的文件
+            MultipartFile file = mfile.getValue();
+            if (file != null) {
+                String fileName = file.getOriginalFilename();
+                File currentFile = new File(fileDir.getAbsoluteFile() + File.separator + fileName);
+                try {
+                    file.transferTo(currentFile);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    throw new SysException("File Upload", "fail", "the file can not upload,please contact system manager.", "file upload failed.An IO exception has been occurred,check the console prints and the disk space remain");
+                }
+                //保存到数据库
+                ApsidFile apsidFile = new ApsidFile();
+                apsidFile.setRncode(RNcode);
+                apsidFile.setUserid(userId);
+                apsidFile.setFiletype(fileType);
+                apsidFile.setFilename(fileName);
+                apsidFile.setFilepath(fileHomePath + File.separator + userId + File.separator + fileName);
+                fileDao.save(apsidFile);
+            }
+        }
+        //===================================文件上传成功，发送邮件====================================
+        //生成CA码
+        int CACode = 0;
+        boolean tag = true;
+        while (tag) {
+            CACode = (int) ((Math.random() * 9 + 1) * 10000);
+            if (fileDao.findByCacode(CACode + "").size() == 0) {
+                tag = false;
+            }
+        }
+        //发送注册邮件
+        MailUtil.sendMail(currentUser.getEmail(), CACode + "", CommonAttribute.ARTICLE_MAIL_TEMPLATE);
+
+        return new ResponseEntity<ResultBody>(new ResultBody("File Upload", "success", null, null), HttpStatus.OK);
 
     }
 

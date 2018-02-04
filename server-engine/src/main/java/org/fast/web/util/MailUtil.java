@@ -1,8 +1,10 @@
 package org.fast.web.util;
 
 import com.sun.mail.util.MailSSLSocketFactory;
+import org.fast.web.attribute.CommonAttribute;
 import org.fast.web.sys.config.SpringContextUtil;
 import org.fast.web.sys.exception.BizException;
+import org.fast.web.sys.exception.SysException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
@@ -41,7 +43,7 @@ public class MailUtil {
         MailUtil.contextUtil = contextUtil;
     }
 
-    public static void sendMail(String to, String code) {
+    public static void sendMail(String to, String code, String templateName) {
 
         Runnable task = new Runnable() {
             @Override
@@ -57,7 +59,19 @@ public class MailUtil {
                 Multipart mainpart = new MimeMultipart();
                 BodyPart html = new MimeBodyPart();
                 MailSSLSocketFactory sf = null;
+                String mailContent;
+                //根据参数装载对应的邮件模板文件内的内容
+                switch (templateName) {
+                    case CommonAttribute.ARTICLE_MAIL_TEMPLATE:
+                        mailContent = getArticleMailHtml(code);
+                        break;
+                    case CommonAttribute.REGISTER_MAIL_TEMPLATE:
+                        mailContent = getMailHtml(code);
+                        break;
+                    default:
+                        throw new SysException("send mail", "fail", "注册邮件发送失败，请重试", "The mail template file is not exist.Please check out the template file name.");
 
+                }
                 try {
                     //开启ssl访问协议
                     sf = new MailSSLSocketFactory();
@@ -68,7 +82,7 @@ public class MailUtil {
                     Session session = Session.getInstance(props);
                     Message msg = new MimeMessage(session);
 
-                    html.setContent(getMailHtml(code), "text/html; charset=utf-8");
+                    html.setContent(mailContent, "text/html; charset=utf-8");
                     mainpart.addBodyPart(html);
 
                     msg.setSubject("Asia-Pacific Society for Immunodeficiencies");
@@ -96,7 +110,29 @@ public class MailUtil {
     public static String getMailHtml(String code) {
         StringBuilder result = new StringBuilder();
         try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(SpringContextUtil.getApplicationContext().getResource("/WEB-INF/template/mail.html").getInputStream(), "UTF-8"));
+            BufferedReader br = new BufferedReader(new InputStreamReader(SpringContextUtil.getApplicationContext().getResource("/WEB-INF/template/" + CommonAttribute.REGISTER_MAIL_TEMPLATE).getInputStream(), "UTF-8"));
+            String s = null;
+            while ((s = br.readLine()) != null) {//使用readLine方法，一次读一行
+                result.append(System.lineSeparator() + s);
+            }
+            br.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BizException("get mail html", "fail", "找不到邮件模板文件，请重试", HttpStatus.BAD_GATEWAY);
+        }
+        //替换指定字符串
+        return result.toString().replace("${code}", code);
+    }
+
+    /**
+     * 读取模板文件articemail.html中的html代码
+     *
+     * @return
+     */
+    public static String getArticleMailHtml(String code) {
+        StringBuilder result = new StringBuilder();
+        try {
+            BufferedReader br = new BufferedReader(new InputStreamReader(SpringContextUtil.getApplicationContext().getResource("/WEB-INF/template/" + CommonAttribute.ARTICLE_MAIL_TEMPLATE).getInputStream(), "UTF-8"));
             String s = null;
             while ((s = br.readLine()) != null) {//使用readLine方法，一次读一行
                 result.append(System.lineSeparator() + s);
