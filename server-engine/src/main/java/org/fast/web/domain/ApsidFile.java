@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.Date;
 
 /**
  * Description:  org.fast.web.domain
@@ -26,7 +27,7 @@ public class ApsidFile {
     private String rncode;
     private String userid;
     private String cacode;
-    private String createtime;
+    private Date createtime;
     private String column1;
 
     public ApsidFile() {
@@ -91,11 +92,11 @@ public class ApsidFile {
         this.cacode = cacode;
     }
 
-    public String getCreatetime() {
+    public Date getCreatetime() {
         return createtime;
     }
 
-    public void setCreatetime(String createtime) {
+    public void setCreatetime(Date createtime) {
         this.createtime = createtime;
     }
 

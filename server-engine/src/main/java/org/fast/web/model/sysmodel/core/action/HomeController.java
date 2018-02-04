@@ -194,6 +194,7 @@ public class HomeController {
                 apsidFile.setUserid(userId);
                 apsidFile.setFiletype(fileType);
                 apsidFile.setFilename(fileName);
+                apsidFile.setCreatetime(new Date());
                 apsidFile.setFilepath(fileHomePath + File.separator + userId + File.separator + fileName);
                 fileDao.save(apsidFile);
             }
