@@ -164,7 +164,7 @@ public class HomeController {
         //验证用户RN码是否正确，并绑定文件
         List a = userDao.findByCode(RNcode);
         if (a.size() == 0) {
-            throw new BizException("RNcode verify", "fail", "the RNcode is not found,please check out and try again.", HttpStatus.NOT_FOUND);
+            throw new BizException("RNcode verify", "fail", "The RNCode is not found, please check out and try again.", HttpStatus.NOT_FOUND);
         }
         User currentUser = (User) (a.get(0));
         String userId = currentUser.getUuid();
